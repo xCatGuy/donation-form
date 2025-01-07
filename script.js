@@ -13,7 +13,7 @@ async function loadItemsForDropdown(file, dropdown) {
     $(dropdown).select2({
       placeholder: 'Select an item',
       allowClear: true,
-      width: '100%', // Adjust to fit the dropdown container
+      width: '100%' // Adjust to fit the dropdown container
     });
   } catch (error) {
     console.error(`Error loading items from ${file}:`, error);
@@ -184,5 +184,5 @@ async function resetForm() {
   await populateInitialRows();
 }
 
-// Initialize rows on page load
+// Load initial rows on page load
 document.addEventListener('DOMContentLoaded', populateInitialRows);
