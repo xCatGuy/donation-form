@@ -51,16 +51,15 @@ function populateDropdownWithGroups(dropdown, items) {
 
 // Function to initialize the first rows on page load
 async function populateInitialRows() {
-  // Populate the initial material row
-  const initialMaterialDropdown = document.querySelector('.material-dropdown');
-  if (initialMaterialDropdown) {
-    await loadItemsForDropdown('raw-items.json', initialMaterialDropdown);
+  const materialDropdown = document.querySelector('.material-dropdown');
+  const processedDropdown = document.querySelector('.processed-dropdown');
+
+  if (materialDropdown) {
+    await loadItemsForDropdown('raw-items.json', materialDropdown);
   }
 
-  // Populate the initial processed row
-  const initialProcessedDropdown = document.querySelector('.processed-dropdown');
-  if (initialProcessedDropdown) {
-    await loadItemsForDropdown('processed-items.json', initialProcessedDropdown);
+  if (processedDropdown) {
+    await loadItemsForDropdown('processed-items.json', processedDropdown);
   }
 }
 
@@ -185,5 +184,5 @@ async function resetForm() {
   await populateInitialRows();
 }
 
-// Load initial rows on page load
+// Initialize rows on page load
 document.addEventListener('DOMContentLoaded', populateInitialRows);
