@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Form</title>
+</head>
+<body>
+    <h1>Donation Form</h1>
+    <form action="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" method="POST">
+        <label for="item">Item:</label>
+        <select name="item" required>
+            <option value="Iron Ore">Iron Ore</option>
+            <option value="Steel Ingot">Steel Ingot</option>
+            <option value="Steel Sword">Steel Sword</option>
+        </select><br>
+
+        <label for="rarity">Rarity:</label>
+        <select name="rarity" required>
+            <option value="Common">Common</option>
+            <option value="Uncommon">Uncommon</option>
+            <option value="Rare">Rare</option>
+            <option value="Epic">Epic</option>
+            <option value="Legendary">Legendary</option>
+        </select><br>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" min="1" required><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
