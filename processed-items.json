@@ -1,0 +1,10 @@
+[
+  { "name": "Iron Bar", "type": "Metals" },
+  { "name": "Steel Bar", "type": "Metals" },
+  { "name": "Oak Plank", "type": "Wood" },
+  { "name": "Pine Plank", "type": "Wood" },
+  { "name": "Ruby Gem", "type": "Gems" },
+  { "name": "Sapphire Gem", "type": "Gems" },
+  { "name": "Enchanted Cloth", "type": "Textiles" },
+  { "name": "Refined Spirit Essence", "type": "Alchemy" }
+]
