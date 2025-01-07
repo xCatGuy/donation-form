@@ -1,53 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donation Form</title>
-    <script src="script.js" defer></script>
-    <style>
-        .donation-row {
-            margin-bottom: 10px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donation Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="script.js" defer></script>
+  <style>
+    .donation-row {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Donation Form</h1>
-    <form id="donationForm" action="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" method="POST">
-        <!-- Username Field -->
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" required><br><br>
+  <h1>Donation Form</h1>
+  <form
+    id="donationForm"
+    action="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+    method="POST"
+  >
+    <!-- Username Field -->
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" required /><br /><br />
 
-        <!-- Raw Materials Header -->
-        <h2>Raw Materials</h2>
+    <!-- Raw Materials Header -->
+    <h2>Raw Materials</h2>
 
-        <!-- Donation Rows Container -->
-        <div id="donationRows">
-            <div class="donation-row">
-                <label for="raw-material">Raw Material:</label>
-                <select name="raw-material[]" class="raw-material-dropdown" required></select>
+    <!-- Donation Rows Container -->
+    <div id="donationRows">
+      <div class="donation-row">
+        <label for="raw-material">Raw Material:</label>
+        <select name="raw-material[]" class="raw-material-dropdown select2" required></select>
 
-                <label for="rarity">Rarity:</label>
-                <select name="rarity[]" required>
-                    <option value="Common">Common</option>
-                    <option value="Uncommon">Uncommon</option>
-                    <option value="Rare">Rare</option>
-                    <option value="Epic">Epic</option>
-                    <option value="Legendary">Legendary</option>
-                </select>
+        <label for="rarity">Rarity:</label>
+        <select name="rarity[]" required>
+          <option value="Common">Common</option>
+          <option value="Uncommon">Uncommon</option>
+          <option value="Rare">Rare</option>
+          <option value="Epic">Epic</option>
+          <option value="Legendary">Legendary</option>
+        </select>
 
-                <label for="quantity">Quantity:</label>
-                <input type="number" name="quantity[]" min="1" required>
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity[]" min="1" required />
 
-                <button type="button" onclick="removeRow(this)">Remove</button>
-            </div>
-        </div>
+        <button type="button" onclick="removeRow(this)">Remove</button>
+      </div>
+    </div>
 
-        <!-- Add Row Button -->
-        <button type="button" onclick="addRow()">Add Donation</button><br><br>
+    <!-- Add Row Button -->
+    <button type="button" onclick="addRow()">Add Donation</button>
+    <br /><br />
 
-        <!-- Submit Button -->
-        <button type="submit">Submit Donations</button>
-    </form>
+    <!-- Submit Button -->
+    <button type="submit">Submit Donations</button>
+  </form>
 </body>
 </html>
