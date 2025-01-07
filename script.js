@@ -1,4 +1,4 @@
-// Function to load raw materials or processed items into a specific dropdown
+// Function to load items into a specific dropdown
 async function loadItemsForDropdown(file, dropdown) {
   try {
     const response = await fetch(file);
@@ -8,13 +8,19 @@ async function loadItemsForDropdown(file, dropdown) {
 
     const items = await response.json();
     populateDropdownWithGroups(dropdown, items);
-    initializeSelect2(dropdown); // Initialize Select2 for searchability
+
+    // Initialize Select2 AFTER populating the dropdown
+    $(dropdown).select2({
+      placeholder: 'Select an item',
+      allowClear: true,
+      width: '100%', // Adjust to fit the dropdown container
+    });
   } catch (error) {
-    console.error(`Error loading ${file}:`, error);
+    console.error(`Error loading items from ${file}:`, error);
   }
 }
 
-// Function to populate a dropdown with grouped items
+// Function to populate dropdown with grouped items
 function populateDropdownWithGroups(dropdown, items) {
   dropdown.innerHTML = ''; // Clear any pre-existing options
 
@@ -43,24 +49,19 @@ function populateDropdownWithGroups(dropdown, items) {
   }
 }
 
-// Function to initialize Select2 for searchability
-function initializeSelect2(dropdown) {
-  $(dropdown).select2({
-    placeholder: 'Select an item',
-    allowClear: true,
-    width: '100%' // Adjust to fit the dropdown container
-  });
-}
-
-// Function to populate initial rows on page load
+// Function to initialize the first rows on page load
 async function populateInitialRows() {
   // Populate the initial material row
   const initialMaterialDropdown = document.querySelector('.material-dropdown');
-  await loadItemsForDropdown('raw-items.json', initialMaterialDropdown);
+  if (initialMaterialDropdown) {
+    await loadItemsForDropdown('raw-items.json', initialMaterialDropdown);
+  }
 
-  // Populate the initial processed item row
+  // Populate the initial processed row
   const initialProcessedDropdown = document.querySelector('.processed-dropdown');
-  await loadItemsForDropdown('processed-items.json', initialProcessedDropdown);
+  if (initialProcessedDropdown) {
+    await loadItemsForDropdown('processed-items.json', initialProcessedDropdown);
+  }
 }
 
 // Function to add a new row for Materials
@@ -70,7 +71,7 @@ async function addMaterialRow() {
   newRow.classList.add('donation-row');
   newRow.innerHTML = `
     <label for="material-item">Raw Material:</label>
-    <select name="material-item[]" class="material-dropdown select2" required></select>
+    <select name="material-item[]" class="material-dropdown" required></select>
 
     <label for="material-rarity">Rarity:</label>
     <select name="material-rarity[]" required>
@@ -99,7 +100,7 @@ async function addProcessedRow() {
   newRow.classList.add('donation-row');
   newRow.innerHTML = `
     <label for="processed-item">Processed Item:</label>
-    <select name="processed-item[]" class="processed-dropdown select2" required></select>
+    <select name="processed-item[]" class="processed-dropdown" required></select>
 
     <label for="processed-rarity">Rarity:</label>
     <select name="processed-rarity[]" required>
@@ -132,7 +133,7 @@ async function resetForm() {
   document.getElementById('materialRows').innerHTML = `
     <div class="donation-row">
       <label for="material-item">Raw Material:</label>
-      <select name="material-item[]" class="material-dropdown select2" required></select>
+      <select name="material-item[]" class="material-dropdown" required></select>
 
       <label for="material-rarity">Rarity:</label>
       <select name="material-rarity[]" required>
@@ -152,7 +153,7 @@ async function resetForm() {
   document.getElementById('processedRows').innerHTML = `
     <div class="donation-row">
       <label for="processed-item">Processed Item:</label>
-      <select name="processed-item[]" class="processed-dropdown select2" required></select>
+      <select name="processed-item[]" class="processed-dropdown" required></select>
 
       <label for="processed-rarity">Rarity:</label>
       <select name="processed-rarity[]" required>
@@ -172,5 +173,5 @@ async function resetForm() {
   await populateInitialRows();
 }
 
-// Load initial items on page load
+// Load initial rows on page load
 document.addEventListener('DOMContentLoaded', populateInitialRows);
