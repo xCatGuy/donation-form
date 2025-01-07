@@ -4,30 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donation Form</title>
+    <style>
+        .donation-row {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Donation Form</h1>
-    <form action="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" method="POST">
-        <label for="item">Item:</label>
-        <select name="item" required>
-            <option value="Iron Ore">Iron Ore</option>
-            <option value="Steel Ingot">Steel Ingot</option>
-            <option value="Steel Sword">Steel Sword</option>
-        </select><br>
+    <form id="donationForm" action="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" method="POST">
+        <!-- Username Field -->
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required><br><br>
 
-        <label for="rarity">Rarity:</label>
-        <select name="rarity" required>
-            <option value="Common">Common</option>
-            <option value="Uncommon">Uncommon</option>
-            <option value="Rare">Rare</option>
-            <option value="Epic">Epic</option>
-            <option value="Legendary">Legendary</option>
-        </select><br>
+        <!-- Donation Rows Container -->
+        <div id="donationRows">
+            <div class="donation-row">
+                <label for="item">Item:</label>
+                <select name="item[]" required>
+                    <option value="Iron Ore">Iron Ore</option>
+                    <option value="Steel Ingot">Steel Ingot</option>
+                    <option value="Steel Sword">Steel Sword</option>
+                </select>
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" name="quantity" min="1" required><br>
+                <label for="rarity">Rarity:</label>
+                <select name="rarity[]" required>
+                    <option value="Common">Common</option>
+                    <option value="Uncommon">Uncommon</option>
+                    <option value="Rare">Rare</option>
+                    <option value="Epic">Epic</option>
+                    <option value="Legendary">Legendary</option>
+                </select>
 
-        <button type="submit">Submit</button>
+                <label for="quantity">Quantity:</label>
+                <input type="number" name="quantity[]" min="1" required>
+
+                <button type="button" onclick="removeRow(this)">Remove</button>
+            </div>
+        </div>
+
+        <!-- Add Row Button -->
+        <button type="button" onclick="addRow()">Add Donation</button><br><br>
+
+        <!-- Submit Button -->
+        <button type="submit">Submit Donations</button>
     </form>
+
+    <script>
+        // Function to add a new donation row
+        function addRow() {
+            const donationRows = document.getElementById('donationRows');
+            const newRow = document.createElement('div');
+            newRow.classList.add('donation-row');
+            newRow.innerHTML = `
+                <label for="item">Item:</label>
+                <select name="item[]" required>
+                    <option value="Iron Ore">Iron Ore</option>
+                    <option value="Steel Ingot">Steel Ingot</option>
+                    <option value="Steel Sword">Steel Sword</option>
+                </select>
+
+                <label for="rarity">Rarity:</label>
+                <select name="rarity[]" required>
+                    <option value="Common">Common</option>
+                    <option value="Uncommon">Uncommon</option>
+                    <option value="Rare">Rare</option>
+                    <option value="Epic">Epic</option>
+                    <option value="Legendary">Legendary</option>
+                </select>
+
+                <label for="quantity">Quantity:</label>
+                <input type="number" name="quantity[]" min="1" required>
+
+                <button type="button" onclick="removeRow(this)">Remove</button>
+            `;
+            donationRows.appendChild(newRow);
+        }
+
+        // Function to remove a donation row
+        function removeRow(button) {
+            button.parentElement.remove();
+        }
+    </script>
 </body>
 </html>
