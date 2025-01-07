@@ -140,6 +140,7 @@ async function resetForm() {
 // Submit form
 async function submitDonationForm(event) {
   event.preventDefault(); // Prevent default form submission
+
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
@@ -156,7 +157,7 @@ async function submitDonationForm(event) {
 
   try {
     const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbxv2MnHBY_a1lBmqw4wQ0TEtQ1sZwbYVCZV1pGd6w2cvjzrcN9O8CwTt41PJGtd8magEw/exec",
+      "https://script.google.com/macros/s/AKfycbypESG3e5kADT1TgMJ0R5wZmPVDNGtdAq0KDUQEYtyzPpZM6gUhj_ZUw4A1fh2hfZ5QHg/exec", // Replace with the actual URL
       {
         method: 'POST',
         headers: {
@@ -177,6 +178,7 @@ async function submitDonationForm(event) {
     alert('An error occurred while submitting your donation.');
   }
 }
+
 
 // Load initial rows on page load
 document.addEventListener('DOMContentLoaded', populateInitialRows);
