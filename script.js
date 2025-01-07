@@ -1,5 +1,5 @@
-// Function to load raw materials and processed items
-async function loadItems(file, dropdownClass) {
+// Function to load raw materials or processed items into a specific dropdown
+async function loadItemsForDropdown(file, dropdown) {
   try {
     const response = await fetch(file);
     if (!response.ok) {
@@ -7,17 +7,14 @@ async function loadItems(file, dropdownClass) {
     }
 
     const items = await response.json();
-    const dropdowns = document.querySelectorAll(dropdownClass);
-    dropdowns.forEach(dropdown => {
-      populateDropdownWithGroups(dropdown, items);
-      initializeSelect2(dropdown); // Initialize Select2 for searchability
-    });
+    populateDropdownWithGroups(dropdown, items);
+    initializeSelect2(dropdown); // Initialize Select2 for searchability
   } catch (error) {
     console.error(`Error loading ${file}:`, error);
   }
 }
 
-// Function to populate dropdown with grouped items
+// Function to populate a dropdown with grouped items
 function populateDropdownWithGroups(dropdown, items) {
   dropdown.innerHTML = ''; // Clear any pre-existing options
 
@@ -55,13 +52,15 @@ function initializeSelect2(dropdown) {
   });
 }
 
-// Function to populate initial rows
+// Function to populate initial rows on page load
 async function populateInitialRows() {
   // Populate the initial material row
-  await loadItems('raw-items.json', '.material-dropdown');
-  
+  const initialMaterialDropdown = document.querySelector('.material-dropdown');
+  await loadItemsForDropdown('raw-items.json', initialMaterialDropdown);
+
   // Populate the initial processed item row
-  await loadItems('processed-items.json', '.processed-dropdown');
+  const initialProcessedDropdown = document.querySelector('.processed-dropdown');
+  await loadItemsForDropdown('processed-items.json', initialProcessedDropdown);
 }
 
 // Function to add a new row for Materials
@@ -89,8 +88,8 @@ async function addMaterialRow() {
   `;
   materialRows.appendChild(newRow);
 
-  const dropdown = newRow.querySelector('.material-dropdown');
-  await loadItems('raw-items.json', '.material-dropdown');
+  const newDropdown = newRow.querySelector('.material-dropdown');
+  await loadItemsForDropdown('raw-items.json', newDropdown);
 }
 
 // Function to add a new row for Processed Items
@@ -118,8 +117,8 @@ async function addProcessedRow() {
   `;
   processedRows.appendChild(newRow);
 
-  const dropdown = newRow.querySelector('.processed-dropdown');
-  await loadItems('processed-items.json', '.processed-dropdown');
+  const newDropdown = newRow.querySelector('.processed-dropdown');
+  await loadItemsForDropdown('processed-items.json', newDropdown);
 }
 
 // Function to remove a donation row
