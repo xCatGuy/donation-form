@@ -118,4 +118,55 @@ function removeRow(button) {
   button.parentElement.remove();
 }
 
-//
+// Function to reset the form
+async function resetForm() {
+  document.getElementById('donationForm').reset();
+  document.getElementById('materialRows').innerHTML = `
+    <div class="donation-row">
+      <label for="material-item">Raw Material:</label>
+      <select name="material-item[]" class="material-dropdown select2" required></select>
+
+      <label for="material-rarity">Rarity:</label>
+      <select name="material-rarity[]" required>
+        <option value="Common">Common</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Rare">Rare</option>
+        <option value="Epic">Epic</option>
+        <option value="Legendary">Legendary</option>
+      </select>
+
+      <label for="material-quantity">Quantity:</label>
+      <input type="number" name="material-quantity[]" min="1" required />
+
+      <button type="button" onclick="removeRow(this)">Remove</button>
+    </div>
+  `;
+  document.getElementById('processedRows').innerHTML = `
+    <div class="donation-row">
+      <label for="processed-item">Processed Item:</label>
+      <select name="processed-item[]" class="processed-dropdown select2" required></select>
+
+      <label for="processed-rarity">Rarity:</label>
+      <select name="processed-rarity[]" required>
+        <option value="Common">Common</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Rare">Rare</option>
+        <option value="Epic">Epic</option>
+        <option value="Legendary">Legendary</option>
+      </select>
+
+      <label for="processed-quantity">Quantity:</label>
+      <input type="number" name="processed-quantity[]" min="1" required />
+
+      <button type="button" onclick="removeRow(this)">Remove</button>
+    </div>
+  `;
+  await loadItems('raw-items.json', '.material-dropdown');
+  await loadItems('processed-items.json', '.processed-dropdown');
+}
+
+// Load initial items on page load
+document.addEventListener('DOMContentLoaded', () => {
+  loadItems('raw-items.json', '.material-dropdown');
+  loadItems('processed-items.json', '.processed-dropdown');
+});
