@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ... (rest of the head content) ... -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donation Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="script.js" defer></script>
   <style>
-    /* General Dark Mode Styles */
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
@@ -150,17 +154,15 @@
     action="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
     method="POST"
   >
-    <!-- Username Field -->
     <label for="username">Username:</label>
     <input type="text" name="username" id="username" required /><br /><br />
 
-    <!-- Materials Section -->
     <h2>Materials</h2>
     <div id="materialRows">
       <div class="donation-row">
         <div>
           <label for="material-item">Raw Material:</label>
-          <select name="material-item[]" class="material-dropdown select2" required></select>
+          <select name="material-item[]" class="material-dropdown" required></select>
         </div>
         <div>
           <label for="material-rarity">Rarity:</label>
@@ -182,13 +184,12 @@
     <button type="button" onclick="addMaterialRow()">Add Material</button>
     <br /><br />
 
-    <!-- Processed Section -->
     <h2>Processed</h2>
     <div id="processedRows">
       <div class="donation-row">
         <div>
           <label for="processed-item">Processed Item:</label>
-          <select name="processed-item[]" class="processed-dropdown select2" required></select>
+          <select name="processed-item[]" class="processed-dropdown" required></select>
         </div>
         <div>
           <label for="processed-rarity">Rarity:</label>
@@ -210,15 +211,12 @@
     <button type="button" onclick="addProcessedRow()">Add Processed Item</button>
     <br /><br />
 
-    <!-- Separator -->
     <div class="separator"></div>
 
-    <!-- Reset and Submit Buttons -->
     <button type="button" onclick="resetForm()">Reset Form</button>
     <button type="submit">Submit Donations</button>
   </form>
 
-  <!-- Footer -->
   <footer>
     Created by <a href="#">xCatGuy</a> for <a href="#">Kaos and Lace Cartel</a>.
   </footer>
