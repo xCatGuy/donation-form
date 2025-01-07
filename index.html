@@ -24,17 +24,15 @@
     <label for="username">Username:</label>
     <input type="text" name="username" id="username" required /><br /><br />
 
-    <!-- Raw Materials Header -->
-    <h2>Raw Materials</h2>
-
-    <!-- Donation Rows Container -->
-    <div id="donationRows">
+    <!-- Materials Section -->
+    <h2>Materials</h2>
+    <div id="materialRows">
       <div class="donation-row">
-        <label for="raw-material">Raw Material:</label>
-        <select name="raw-material[]" class="raw-material-dropdown select2" required></select>
+        <label for="material-item">Raw Material:</label>
+        <select name="material-item[]" class="material-dropdown select2" required></select>
 
-        <label for="rarity">Rarity:</label>
-        <select name="rarity[]" required>
+        <label for="material-rarity">Rarity:</label>
+        <select name="material-rarity[]" required>
           <option value="Common">Common</option>
           <option value="Uncommon">Uncommon</option>
           <option value="Rare">Rare</option>
@@ -42,21 +40,42 @@
           <option value="Legendary">Legendary</option>
         </select>
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" name="quantity[]" min="1" required />
+        <label for="material-quantity">Quantity:</label>
+        <input type="number" name="material-quantity[]" min="1" required />
 
         <button type="button" onclick="removeRow(this)">Remove</button>
       </div>
     </div>
-
-    <!-- Add Row Button -->
-    <button type="button" onclick="addRow()">Add Donation</button>
-
-    <!-- Reset Form Button -->
-    <button type="button" onclick="resetForm()">Reset Form</button>
+    <button type="button" onclick="addMaterialRow()">Add Material</button>
     <br /><br />
 
-    <!-- Submit Button -->
+    <!-- Processed Section -->
+    <h2>Processed</h2>
+    <div id="processedRows">
+      <div class="donation-row">
+        <label for="processed-item">Processed Item:</label>
+        <select name="processed-item[]" class="processed-dropdown select2" required></select>
+
+        <label for="processed-rarity">Rarity:</label>
+        <select name="processed-rarity[]" required>
+          <option value="Common">Common</option>
+          <option value="Uncommon">Uncommon</option>
+          <option value="Rare">Rare</option>
+          <option value="Epic">Epic</option>
+          <option value="Legendary">Legendary</option>
+        </select>
+
+        <label for="processed-quantity">Quantity:</label>
+        <input type="number" name="processed-quantity[]" min="1" required />
+
+        <button type="button" onclick="removeRow(this)">Remove</button>
+      </div>
+    </div>
+    <button type="button" onclick="addProcessedRow()">Add Processed Item</button>
+    <br /><br />
+
+    <!-- Reset and Submit Buttons -->
+    <button type="button" onclick="resetForm()">Reset Form</button>
     <button type="submit">Submit Donations</button>
   </form>
 </body>
