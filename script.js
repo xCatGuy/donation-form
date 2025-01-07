@@ -20,7 +20,7 @@ async function loadItemsForDropdown(file, dropdown) {
   }
 }
 
-// Function to populate dropdown with grouped items
+// Function to populate a dropdown with grouped items
 function populateDropdownWithGroups(dropdown, items) {
   dropdown.innerHTML = ''; // Clear any pre-existing options
 
@@ -70,21 +70,24 @@ async function addMaterialRow() {
   const newRow = document.createElement('div');
   newRow.classList.add('donation-row');
   newRow.innerHTML = `
-    <label for="material-item">Raw Material:</label>
-    <select name="material-item[]" class="material-dropdown" required></select>
-
-    <label for="material-rarity">Rarity:</label>
-    <select name="material-rarity[]" required>
-      <option value="Common">Common</option>
-      <option value="Uncommon">Uncommon</option>
-      <option value="Rare">Rare</option>
-      <option value="Epic">Epic</option>
-      <option value="Legendary">Legendary</option>
-    </select>
-
-    <label for="material-quantity">Quantity:</label>
-    <input type="number" name="material-quantity[]" min="1" required />
-
+    <div>
+      <label for="material-item">Raw Material:</label>
+      <select name="material-item[]" class="material-dropdown" required></select>
+    </div>
+    <div>
+      <label for="material-rarity">Rarity:</label>
+      <select name="material-rarity[]" required>
+        <option value="Common">Common</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Rare">Rare</option>
+        <option value="Epic">Epic</option>
+        <option value="Legendary">Legendary</option>
+      </select>
+    </div>
+    <div>
+      <label for="material-quantity">Quantity:</label>
+      <input type="number" name="material-quantity[]" min="1" required />
+    </div>
     <button type="button" onclick="removeRow(this)">Remove</button>
   `;
   materialRows.appendChild(newRow);
@@ -99,21 +102,24 @@ async function addProcessedRow() {
   const newRow = document.createElement('div');
   newRow.classList.add('donation-row');
   newRow.innerHTML = `
-    <label for="processed-item">Processed Item:</label>
-    <select name="processed-item[]" class="processed-dropdown" required></select>
-
-    <label for="processed-rarity">Rarity:</label>
-    <select name="processed-rarity[]" required>
-      <option value="Common">Common</option>
-      <option value="Uncommon">Uncommon</option>
-      <option value="Rare">Rare</option>
-      <option value="Epic">Epic</option>
-      <option value="Legendary">Legendary</option>
-    </select>
-
-    <label for="processed-quantity">Quantity:</label>
-    <input type="number" name="processed-quantity[]" min="1" required />
-
+    <div>
+      <label for="processed-item">Processed Item:</label>
+      <select name="processed-item[]" class="processed-dropdown" required></select>
+    </div>
+    <div>
+      <label for="processed-rarity">Rarity:</label>
+      <select name="processed-rarity[]" required>
+        <option value="Common">Common</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Rare">Rare</option>
+        <option value="Epic">Epic</option>
+        <option value="Legendary">Legendary</option>
+      </select>
+    </div>
+    <div>
+      <label for="processed-quantity">Quantity:</label>
+      <input type="number" name="processed-quantity[]" min="1" required />
+    </div>
     <button type="button" onclick="removeRow(this)">Remove</button>
   `;
   processedRows.appendChild(newRow);
@@ -132,41 +138,47 @@ async function resetForm() {
   document.getElementById('donationForm').reset();
   document.getElementById('materialRows').innerHTML = `
     <div class="donation-row">
-      <label for="material-item">Raw Material:</label>
-      <select name="material-item[]" class="material-dropdown" required></select>
-
-      <label for="material-rarity">Rarity:</label>
-      <select name="material-rarity[]" required>
-        <option value="Common">Common</option>
-        <option value="Uncommon">Uncommon</option>
-        <option value="Rare">Rare</option>
-        <option value="Epic">Epic</option>
-        <option value="Legendary">Legendary</option>
-      </select>
-
-      <label for="material-quantity">Quantity:</label>
-      <input type="number" name="material-quantity[]" min="1" required />
-
+      <div>
+        <label for="material-item">Raw Material:</label>
+        <select name="material-item[]" class="material-dropdown" required></select>
+      </div>
+      <div>
+        <label for="material-rarity">Rarity:</label>
+        <select name="material-rarity[]" required>
+          <option value="Common">Common</option>
+          <option value="Uncommon">Uncommon</option>
+          <option value="Rare">Rare</option>
+          <option value="Epic">Epic</option>
+          <option value="Legendary">Legendary</option>
+        </select>
+      </div>
+      <div>
+        <label for="material-quantity">Quantity:</label>
+        <input type="number" name="material-quantity[]" min="1" required />
+      </div>
       <button type="button" onclick="removeRow(this)">Remove</button>
     </div>
   `;
   document.getElementById('processedRows').innerHTML = `
     <div class="donation-row">
-      <label for="processed-item">Processed Item:</label>
-      <select name="processed-item[]" class="processed-dropdown" required></select>
-
-      <label for="processed-rarity">Rarity:</label>
-      <select name="processed-rarity[]" required>
-        <option value="Common">Common</option>
-        <option value="Uncommon">Uncommon</option>
-        <option value="Rare">Rare</option>
-        <option value="Epic">Epic</option>
-        <option value="Legendary">Legendary</option>
-      </select>
-
-      <label for="processed-quantity">Quantity:</label>
-      <input type="number" name="processed-quantity[]" min="1" required />
-
+      <div>
+        <label for="processed-item">Processed Item:</label>
+        <select name="processed-item[]" class="processed-dropdown" required></select>
+      </div>
+      <div>
+        <label for="processed-rarity">Rarity:</label>
+        <select name="processed-rarity[]" required>
+          <option value="Common">Common</option>
+          <option value="Uncommon">Uncommon</option>
+          <option value="Rare">Rare</option>
+          <option value="Epic">Epic</option>
+          <option value="Legendary">Legendary</option>
+        </select>
+      </div>
+      <div>
+        <label for="processed-quantity">Quantity:</label>
+        <input type="number" name="processed-quantity[]" min="1" required />
+      </div>
       <button type="button" onclick="removeRow(this)">Remove</button>
     </div>
   `;
