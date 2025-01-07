@@ -1,4 +1,5 @@
 [
+  { "name": "Select Item", "type": "Type" },
   { "name": "Bluegill", "type": "Fish" },
   { "name": "Catfish", "type": "Fish" },
   { "name": "Crabfish", "type": "Fish" },
