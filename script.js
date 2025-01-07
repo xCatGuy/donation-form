@@ -25,9 +25,9 @@ async function submitDonationForm(event) {
     });
 
     if (response.ok) {
-      alert('Donation submitted successfully!');
-      form.reset();
-      resetForm(); // Reinitialize dropdowns
+      // Hide the form and show the success message
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('success-message').style.display = 'block';
     } else {
       alert('Failed to submit donation. Please try again.');
     }
@@ -36,5 +36,3 @@ async function submitDonationForm(event) {
     alert('An error occurred while submitting your donation.');
   }
 }
-
-// Existing functions (resetForm, addMaterialRow, addProcessedRow, removeRow, etc.) remain unchanged.
