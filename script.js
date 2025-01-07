@@ -55,6 +55,15 @@ function initializeSelect2(dropdown) {
   });
 }
 
+// Function to populate initial rows
+async function populateInitialRows() {
+  // Populate the initial material row
+  await loadItems('raw-items.json', '.material-dropdown');
+  
+  // Populate the initial processed item row
+  await loadItems('processed-items.json', '.processed-dropdown');
+}
+
 // Function to add a new row for Materials
 async function addMaterialRow() {
   const materialRows = document.getElementById('materialRows');
@@ -161,12 +170,8 @@ async function resetForm() {
       <button type="button" onclick="removeRow(this)">Remove</button>
     </div>
   `;
-  await loadItems('raw-items.json', '.material-dropdown');
-  await loadItems('processed-items.json', '.processed-dropdown');
+  await populateInitialRows();
 }
 
 // Load initial items on page load
-document.addEventListener('DOMContentLoaded', () => {
-  loadItems('raw-items.json', '.material-dropdown');
-  loadItems('processed-items.json', '.processed-dropdown');
-});
+document.addEventListener('DOMContentLoaded', populateInitialRows);
