@@ -89,5 +89,10 @@ function initializeSelect2(dropdown) {
   });
 }
 
+// Function to remove a donation row
+function removeRow(button) {
+  button.parentElement.remove();
+}
+
 // Initial load of raw materials for the default row(s)
 document.addEventListener('DOMContentLoaded', loadRawMaterials);
