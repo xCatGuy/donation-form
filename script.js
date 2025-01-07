@@ -155,18 +155,4 @@ async function resetForm() {
         <option value="Legendary">Legendary</option>
       </select>
 
-      <label for="processed-quantity">Quantity:</label>
-      <input type="number" name="processed-quantity[]" min="1" required />
-
-      <button type="button" onclick="removeRow(this)">Remove</button>
-    </div>
-  `;
-  await loadItems('raw-items.json', '.material-dropdown');
-  await loadItems('processed-items.json', '.processed-dropdown');
-}
-
-// Load initial items on page load
-document.addEventListener('DOMContentLoaded', () => {
-  loadItems('raw-items.json', '.material-dropdown');
-  loadItems('processed-items.json', '.processed-dropdown');
-});
+      <label for="processed-quantity">Quantity
