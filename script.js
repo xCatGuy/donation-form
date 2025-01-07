@@ -18,6 +18,7 @@ function populateAllDropdowns(items) {
   const dropdowns = document.querySelectorAll('.raw-material-dropdown');
   dropdowns.forEach(dropdown => {
     populateDropdown(dropdown, items);
+    initializeSelect2(dropdown); // Initialize Select2 for enhanced search functionality
   });
 }
 
@@ -35,6 +36,15 @@ function populateDropdown(dropdown, items) {
   });
 }
 
+// Function to initialize Select2 for a dropdown
+function initializeSelect2(dropdown) {
+  $(dropdown).select2({
+    placeholder: 'Select a raw material',
+    allowClear: true,
+    width: '100%' // Adjusts the width to match the dropdown container
+  });
+}
+
 // Function to add a new donation row
 async function addRow() {
   const donationRows = document.getElementById('donationRows');
@@ -42,7 +52,7 @@ async function addRow() {
   newRow.classList.add('donation-row');
   newRow.innerHTML = `
     <label for="raw-material">Raw Material:</label>
-    <select name="raw-material[]" class="raw-material-dropdown" required></select>
+    <select name="raw-material[]" class="raw-material-dropdown select2" required></select>
 
     <label for="rarity">Rarity:</label>
     <select name="rarity[]" required>
@@ -65,16 +75,4 @@ async function addRow() {
     const response = await fetch('raw-items.json'); 
     const items = await response.json();
     const dropdown = newRow.querySelector('.raw-material-dropdown');
-    populateDropdown(dropdown, items);
-  } catch (error) {
-    console.error('Error populating new row dropdown:', error);
-  }
-}
-
-// Function to remove a donation row
-function removeRow(button) {
-  button.parentElement.remove();
-}
-
-// Initial load of raw materials for the default row(s)
-document.addEventListener('DOMContentLoaded', loadRawMaterials);
+    popul
