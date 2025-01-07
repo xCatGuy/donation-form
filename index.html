@@ -38,6 +38,28 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     }
 
+    .success-message {
+      display: none;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #4caf50;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .success-message h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .success-message p {
+      font-size: 1rem;
+      color: #e0e0e0;
+    }
+
     .donation-row {
       display: flex;
       flex-wrap: wrap;
@@ -49,21 +71,6 @@
     .donation-row > div {
       flex: 1 1 30%;
       min-width: 180px;
-    }
-
-    .donation-row button {
-      flex: 0 0 auto;
-      padding: 8px 12px;
-      margin-top: 22px;
-      background-color: #d9534f;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .donation-row button:hover {
-      background-color: #c9302c;
     }
 
     label {
@@ -84,137 +91,79 @@
       border-radius: 5px;
       box-sizing: border-box;
     }
-
-    button {
-      padding: 10px 15px;
-      margin: 10px 5px 0;
-      font-size: 1rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button[type="submit"] {
-      background-color: #4caf50;
-      color: white;
-    }
-
-    button[type="button"] {
-      background-color: #007bff;
-      color: white;
-    }
-
-    button[type="button"]:hover {
-      background-color: #0056b3;
-    }
-
-    button[type="submit"]:hover {
-      background-color: #3e8e41;
-    }
-
-    .separator {
-      border-top: 2px dashed #444444;
-      margin: 30px 0;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 20px;
-      padding: 10px;
-      font-size: 0.9rem;
-      color: #aaaaaa;
-    }
-
-    footer a {
-      color: #4caf50;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 768px) {
-      .donation-row {
-        flex-direction: column;
-      }
-      .donation-row > div {
-        flex: 1 1 100%;
-      }
-      .donation-row button {
-        margin-top: 10px;
-      }
-    }
   </style>
 </head>
 <body>
-  <h1>Donation Form</h1>
-  <form id="donationForm" onsubmit="submitDonationForm(event)">
-    <label for="username">Username:</label>
-    <input type="text" name="username" id="username" required /><br /><br />
+  <div id="form-container">
+    <h1>Donation Form</h1>
+    <form id="donationForm" onsubmit="submitDonationForm(event)">
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username" required /><br /><br />
 
-    <h2>Materials</h2>
-    <div id="materialRows">
-      <div class="donation-row">
-        <div>
-          <label for="material-item">Raw Material:</label>
-          <select name="material-item[]" class="material-dropdown" required></select>
+      <h2>Materials</h2>
+      <div id="materialRows">
+        <div class="donation-row">
+          <div>
+            <label for="material-item">Raw Material:</label>
+            <select name="material-item[]" class="material-dropdown" required></select>
+          </div>
+          <div>
+            <label for="material-rarity">Rarity:</label>
+            <select name="material-rarity[]" required>
+              <option value="Common">Common</option>
+              <option value="Uncommon">Uncommon</option>
+              <option value="Rare">Rare</option>
+              <option value="Epic">Epic</option>
+              <option value="Legendary">Legendary</option>
+            </select>
+          </div>
+          <div>
+            <label for="material-quantity">Quantity:</label>
+            <input type="number" name="material-quantity[]" min="1" required />
+          </div>
+          <button type="button" onclick="removeRow(this)">Remove</button>
         </div>
-        <div>
-          <label for="material-rarity">Rarity:</label>
-          <select name="material-rarity[]" required>
-            <option value="Common">Common</option>
-            <option value="Uncommon">Uncommon</option>
-            <option value="Rare">Rare</option>
-            <option value="Epic">Epic</option>
-            <option value="Legendary">Legendary</option>
-          </select>
-        </div>
-        <div>
-          <label for="material-quantity">Quantity:</label>
-          <input type="number" name="material-quantity[]" min="1" required />
-        </div>
-        <button type="button" onclick="removeRow(this)">Remove</button>
       </div>
-    </div>
-    <button type="button" onclick="addMaterialRow()">Add Material</button>
-    <br /><br />
+      <button type="button" onclick="addMaterialRow()">Add Material</button>
+      <br /><br />
 
-    <h2>Processed</h2>
-    <div id="processedRows">
-      <div class="donation-row">
-        <div>
-          <label for="processed-item">Processed Item:</label>
-          <select name="processed-item[]" class="processed-dropdown" required></select>
+      <h2>Processed</h2>
+      <div id="processedRows">
+        <div class="donation-row">
+          <div>
+            <label for="processed-item">Processed Item:</label>
+            <select name="processed-item[]" class="processed-dropdown" required></select>
+          </div>
+          <div>
+            <label for="processed-rarity">Rarity:</label>
+            <select name="processed-rarity[]" required>
+              <option value="Common">Common</option>
+              <option value="Uncommon">Uncommon</option>
+              <option value="Rare">Rare</option>
+              <option value="Epic">Epic</option>
+              <option value="Legendary">Legendary</option>
+            </select>
+          </div>
+          <div>
+            <label for="processed-quantity">Quantity:</label>
+            <input type="number" name="processed-quantity[]" min="1" required />
+          </div>
+          <button type="button" onclick="removeRow(this)">Remove</button>
         </div>
-        <div>
-          <label for="processed-rarity">Rarity:</label>
-          <select name="processed-rarity[]" required>
-            <option value="Common">Common</option>
-            <option value="Uncommon">Uncommon</option>
-            <option value="Rare">Rare</option>
-            <option value="Epic">Epic</option>
-            <option value="Legendary">Legendary</option>
-          </select>
-        </div>
-        <div>
-          <label for="processed-quantity">Quantity:</label>
-          <input type="number" name="processed-quantity[]" min="1" required />
-        </div>
-        <button type="button" onclick="removeRow(this)">Remove</button>
       </div>
-    </div>
-    <button type="button" onclick="addProcessedRow()">Add Processed Item</button>
-    <br /><br />
+      <button type="button" onclick="addProcessedRow()">Add Processed Item</button>
+      <br /><br />
 
-    <div class="separator"></div>
+      <div class="separator"></div>
 
-    <button type="button" onclick="resetForm()">Reset Form</button>
-    <button type="submit">Submit Donations</button>
-  </form>
+      <button type="button" onclick="resetForm()">Reset Form</button>
+      <button type="submit">Submit Donations</button>
+    </form>
+  </div>
 
-  <footer>
-    Created by <a href="#">xCatGuy</a> for <a href="#">Kaos and Lace Cartel</a>.
-  </footer>
+  <div id="success-message" class="success-message">
+    <h1>Thank You!</h1>
+    <p>Your donation has been successfully submitted.</p>
+  </div>
 </body>
 </html>
