@@ -1,4 +1,5 @@
 [
+  { "name": "Select Item", "type": "Type" },
   { "name": "Iron Bar", "type": "Metals" },
   { "name": "Steel Bar", "type": "Metals" },
   { "name": "Oak Plank", "type": "Wood" },
