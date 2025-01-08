@@ -27,6 +27,8 @@ function populateDropdown(dropdown, items) {
 async function populateInitialRows() {
   const materialDropdown = document.querySelector('.material-dropdown');
   const processedDropdown = document.querySelector('.processed-dropdown');
+
+  // Load items for the first (initial) material & processed dropdowns
   await loadItemsForDropdown('raw-items.json', materialDropdown);
   await loadItemsForDropdown('processed-items.json', processedDropdown);
 
@@ -54,43 +56,48 @@ async function submitDonationForm(event) {
   // Construct an array of rows
   let rows = [];
 
-  // Add material entries
+  // Add rows for raw materials
   for (let i = 0; i < materials.length; i++) {
     rows.push({
-      username,
+      username: username,
       "material-item": materials[i],
       "material-rarity": raritiesMaterial[i],
       "material-quantity": quantitiesMaterial[i],
       "processed-item": "",
       "processed-rarity": "",
       "processed-quantity": "",
-      "timestamp": new Date().toISOString() // Adding timestamp
+      timestamp: new Date().toISOString() // optional: ISO timestamp
     });
   }
 
-  // Add processed item entries
+  // Add rows for processed items
   for (let i = 0; i < processedItems.length; i++) {
     rows.push({
-      username,
+      username: username,
       "material-item": "",
       "material-rarity": "",
       "material-quantity": "",
       "processed-item": processedItems[i],
       "processed-rarity": raritiesProcessed[i],
       "processed-quantity": quantitiesProcessed[i],
-      "timestamp": new Date().toISOString() // Adding timestamp
+      timestamp: new Date().toISOString() // optional: ISO timestamp
     });
   }
 
+  // Sheety expects an object whose key is the sheet name, 
+  // and the value is either a single object or an array of objects.
+  // Since we're sending multiple rows, pass an array.
   const data = {
     sheet1: rows
   };
 
-  console.log("Submitting data to:", "https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1");
+  const sheetyUrl = "https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1";
+
+  console.log("Submitting data to:", sheetyUrl);
   console.log("Data being sent:", JSON.stringify(data));
 
   try {
-    const response = await fetch("https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1", {
+    const response = await fetch(sheetyUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -152,4 +159,46 @@ function addMaterialRow() {
 }
 
 // Add extra processed item row
-function addProcessedRow()
+function addProcessedRow() {
+  const processedRows = document.getElementById('processedRows');
+  const newRow = document.createElement('div');
+  newRow.classList.add('donation-row');
+
+  newRow.innerHTML = `
+    <div>
+      <label for="processed-item">Processed Item:</label>
+      <select name="processed-item[]" class="processed-dropdown" required></select>
+    </div>
+    <div>
+      <label for="processed-rarity">Rarity:</label>
+      <select name="processed-rarity[]" required>
+        <option value="Common">Common</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Rare">Rare</option>
+        <option value="Heroic">Heroic</option>
+        <option value="Epic">Epic</option>
+        <option value="Legendary">Legendary</option>
+      </select>
+    </div>
+    <div>
+      <label for="processed-quantity">Quantity:</label>
+      <input type="number" name="processed-quantity[]" min="1" required />
+    </div>
+  `;
+
+  processedRows.appendChild(newRow);
+
+  // Re-initialize Select2 for the new row's dropdown
+  $(newRow).find('.processed-dropdown').select2();
+
+  // Load items into the new processed dropdown
+  loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
+}
+
+// Reset form
+function resetForm() {
+  document.getElementById('donationForm').reset();
+}
+
+// Load initial rows on page load
+document.addEventListener("DOMContentLoaded", populateInitialRows);
