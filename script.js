@@ -2,7 +2,10 @@
   1) LOAD AND POPULATE ITEMS
 ********************************************************/
 
-// Function to load items into dropdowns
+/**
+ * Loads JSON from 'file' and populates the given dropdown
+ * with items grouped by their 'type' field (if present).
+ */
 async function loadItemsForDropdown(file, dropdown) {
   try {
     const response = await fetch(file);
@@ -10,40 +13,69 @@ async function loadItemsForDropdown(file, dropdown) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const items = await response.json();
-    populateDropdown(dropdown, items);
+
+    // If your items have a "type" field, group them
+    populateDropdownWithGroups(dropdown, items);
   } catch (error) {
     console.error(`Error loading ${file}:`, error);
   }
 }
 
-function populateDropdown(dropdown, items) {
-  dropdown.innerHTML = ''; // Clear existing options
+/**
+ * Populates a select dropdown with items, grouping by 'type'
+ * if item.type exists. Otherwise, everything goes in "Other" group.
+ */
+function populateDropdownWithGroups(dropdown, items) {
+  // Clear any existing
+  dropdown.innerHTML = '';
 
-  // Optional placeholder
+  // We'll store items by type in an object like { typeName: [items...] }
+  const groups = {};
+
+  items.forEach(item => {
+    const itemType = item.type || 'Other';
+    if (!groups[itemType]) {
+      groups[itemType] = [];
+    }
+    groups[itemType].push(item.name);
+  });
+
+  // For convenience, create a placeholder
   const placeholderOption = document.createElement('option');
   placeholderOption.value = '';
   placeholderOption.textContent = '-- Select an option --';
   dropdown.appendChild(placeholderOption);
 
-  items.forEach(item => {
-    const option = document.createElement('option');
-    option.value = item.name;
-    option.textContent = item.name;
-    dropdown.appendChild(option);
-  });
+  // Now build <optgroup> for each type
+  for (let typeKey in groups) {
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = typeKey;
+
+    groups[typeKey].forEach(itemName => {
+      const option = document.createElement('option');
+      option.value = itemName;
+      option.textContent = itemName;
+      optgroup.appendChild(option);
+    });
+
+    dropdown.appendChild(optgroup);
+  }
 }
 
+/**
+ * Called on page load to populate the initial material and processed dropdowns.
+ */
 async function populateInitialRows() {
   const materialDropdown = document.querySelector('.material-dropdown');
   const processedDropdown = document.querySelector('.processed-dropdown');
 
-  // Load items for the first (initial) material & processed dropdowns
+  // Load items for the first (initial) material & processed dropdown
   await loadItemsForDropdown('raw-items.json', materialDropdown);
   await loadItemsForDropdown('processed-items.json', processedDropdown);
 
   // Initialize Select2 after populating items
   $(document).ready(() => {
-    $('.material-dropdown, .processed-dropdown').select2();
+    $('.material-dropdown, .processed-dropdown, .material-rarity-dropdown, .processed-rarity-dropdown').select2();
   });
 }
 
@@ -68,7 +100,7 @@ async function submitDonationForm(event) {
   const processedRarities = formData.getAll('processed-rarity[]');
   const processedQuantities = formData.getAll('processed-quantity[]');
 
-  // Combine each array into comma-separated strings (even if empty)
+  // Filter empty and join for better display (avoid trailing commas if blank)
   const materialItemsStr = materials.filter(Boolean).join(', ');
   const materialRaritiesStr = materialRarities.filter(Boolean).join(', ');
   const materialQuantitiesStr = materialQuantities.filter(Boolean).join(', ');
@@ -127,12 +159,12 @@ async function submitDonationForm(event) {
 /********************************************************
   3) ADD EXTRA MATERIAL ROW
 ********************************************************/
-
 function addMaterialRow() {
   const materialRows = document.getElementById('materialRows');
   const newRow = document.createElement('div');
   newRow.classList.add('donation-row');
 
+  // Just replicate the same HTML, but no 'required'
   newRow.innerHTML = `
     <div>
       <label for="material-item">Raw Material:</label>
@@ -158,17 +190,16 @@ function addMaterialRow() {
 
   materialRows.appendChild(newRow);
 
-  // Re-init Select2 for the new dropdown
+  // Re-init Select2 after we add the new row
   $(newRow).find('.material-dropdown, .material-rarity-dropdown').select2();
 
-  // Load items into the new material dropdown
+  // Load items into the new material dropdown (with groups)
   loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
 }
 
 /********************************************************
   4) ADD EXTRA PROCESSED ITEM ROW
 ********************************************************/
-
 function addProcessedRow() {
   const processedRows = document.getElementById('processedRows');
   const newRow = document.createElement('div');
@@ -199,17 +230,16 @@ function addProcessedRow() {
 
   processedRows.appendChild(newRow);
 
-  // Re-init Select2 for the new dropdown
+  // Re-init Select2 for the new row
   $(newRow).find('.processed-dropdown, .processed-rarity-dropdown').select2();
 
-  // Load items into the new processed dropdown
+  // Load items into the new processed dropdown (with groups)
   loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
 }
 
 /********************************************************
   5) RESET FORM
 ********************************************************/
-
 function resetForm() {
   document.getElementById('donationForm').reset();
 }
@@ -217,5 +247,4 @@ function resetForm() {
 /********************************************************
   6) ON PAGE LOAD
 ********************************************************/
-
 document.addEventListener("DOMContentLoaded", populateInitialRows);
