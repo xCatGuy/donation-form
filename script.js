@@ -31,126 +31,9 @@ async function populateInitialRows() {
   await loadItemsForDropdown('processed-items.json', processedDropdown);
 
   // Initialize Select2 after populating items
-  $('.material-dropdown, .processed-dropdown').select2();
-}
-
-// Add new Material row
-async function addMaterialRow() {
-  const materialRows = document.getElementById('materialRows');
-  const newRow = document.createElement('div');
-  newRow.classList.add('donation-row');
-  newRow.innerHTML = `
-    <div>
-      <label for="material-item">Raw Material:</label>
-      <select name="material-item[]" class="material-dropdown" required></select>
-    </div>
-    <div>
-      <label for="material-rarity">Rarity:</label>
-      <select name="material-rarity[]" required>
-        <option value="Common">Common</option>
-        <option value="Uncommon">Uncommon</option>
-        <option value="Rare">Rare</option>
-        <option value="Heroic">Heroic</option>
-        <option value="Epic">Epic</option>
-        <option value="Legendary">Legendary</option>
-      </select>
-    </div>
-    <div>
-      <label for="material-quantity">Quantity:</label>
-      <input type="number" name="material-quantity[]" min="1" required />
-    </div>`;
-  materialRows.appendChild(newRow);
-  const dropdown = newRow.querySelector('.material-dropdown');
-  await loadItemsForDropdown('raw-items.json', dropdown);
-
-  // Reinitialize Select2 for new dropdown
-  $('.material-dropdown').select2();
-}
-
-// Add new Processed row
-async function addProcessedRow() {
-  const processedRows = document.getElementById('processedRows');
-  const newRow = document.createElement('div');
-  newRow.classList.add('donation-row');
-  newRow.innerHTML = `
-    <div>
-      <label for="processed-item">Processed Item:</label>
-      <select name="processed-item[]" class="processed-dropdown" required></select>
-    </div>
-    <div>
-      <label for="processed-rarity">Rarity:</label>
-      <select name="processed-rarity[]" required>
-        <option value="Common">Common</option>
-        <option value="Uncommon">Uncommon</option>
-        <option value="Rare">Rare</option>
-        <option value="Heroic">Heroic</option>
-        <option value="Epic">Epic</option>
-        <option value="Legendary">Legendary</option>
-      </select>
-    </div>
-    <div>
-      <label for="processed-quantity">Quantity:</label>
-      <input type="number" name="processed-quantity[]" min="1" required />
-    </div>`;
-  processedRows.appendChild(newRow);
-  const dropdown = newRow.querySelector('.processed-dropdown');
-  await loadItemsForDropdown('processed-items.json', dropdown);
-
-  // Reinitialize Select2 for new dropdown
-  $('.processed-dropdown').select2();
-}
-
-// Reset form
-async function resetForm() {
-  document.getElementById('donationForm').reset();
-  document.getElementById('materialRows').innerHTML = `
-    <div class="donation-row">
-      <div>
-        <label for="material-item">Raw Material:</label>
-        <select name="material-item[]" class="material-dropdown" required></select>
-      </div>
-      <div>
-        <label for="material-rarity">Rarity:</label>
-        <select name="material-rarity[]" required>
-          <option value="Common">Common</option>
-          <option value="Uncommon">Uncommon</option>
-          <option value="Rare">Rare</option>
-          <option value="Heroic">Heroic</option>
-          <option value="Epic">Epic</option>
-          <option value="Legendary">Legendary</option>
-        </select>
-      </div>
-      <div>
-        <label for="material-quantity">Quantity:</label>
-        <input type="number" name="material-quantity[]" min="1" required />
-      </div>
-    </div>`;
-  document.getElementById('processedRows').innerHTML = `
-    <div class="donation-row">
-      <div>
-        <label for="processed-item">Processed Item:</label>
-        <select name="processed-item[]" class="processed-dropdown" required></select>
-      </div>
-      <div>
-        <label for="processed-rarity">Rarity:</label>
-        <select name="processed-rarity[]" required>
-          <option value="Common">Common</option>
-          <option value="Uncommon">Uncommon</option>
-          <option value="Rare">Rare</option>
-          <option value="Heroic">Heroic</option>
-          <option value="Epic">Epic</option>
-          <option value="Legendary">Legendary</option>
-        </select>
-      </div>
-      <div>
-        <label for="processed-quantity">Quantity:</label>
-        <input type="number" name="processed-quantity[]" min="1" required />
-      </div>
-    </div>`;
-  await populateInitialRows();
-
-  // Reinitialize Select2 after resetting rows
-  $('.material-dropdown, .processed-dropdown').select2();
+  $(document).ready(() => {
+    $('.material-dropdown, .processed-dropdown').select2();
+  });
 }
 
 // Submit form
@@ -160,7 +43,6 @@ async function submitDonationForm(event) {
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
-  // Prepare JSON object
   const data = {
     username: formData.get('username'),
     "material-item[]": formData.getAll('material-item[]'),
@@ -171,24 +53,21 @@ async function submitDonationForm(event) {
     "processed-quantity[]": formData.getAll('processed-quantity[]'),
   };
 
-  console.log("Submitting data to:", "https://script.google.com/macros/s/AKfycbwtP-bbomiUQR8IKLW7v9QThN5hhELQpzaEuyg-QDxuD6sVor_MhU8Z8uPmx1myN1e3VQ/exec");
-  console.log("Data being sent:", JSON.stringify(data)); // Debugging log
+  console.log("Submitting data to:", "https://script.google.com/macros/s/AKfycbyfGcSaafumdjA8P1nhEBINJG1JAP8t6SctyvaDwwuY7ATJTs-bcEUGhMvvDTvf9biJtg/exec");
+  console.log("Data being sent:", JSON.stringify(data));
 
   try {
-    const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbwtP-bbomiUQR8IKLW7v9QThN5hhELQpzaEuyg-QDxuD6sVor_MhU8Z8uPmx1myN1e3VQ/exec",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data), // Serialize to JSON string
-      }
-    );
+    const response = await fetch("YOUR_DEPLOYMENT_URL", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
     if (response.ok) {
       const result = await response.json();
-      console.log("Server Response:", result); // Debugging log
+      console.log("Server Response:", result);
       document.getElementById('form-container').style.display = 'none';
       document.getElementById('success-message').style.display = 'block';
     } else {
@@ -204,8 +83,3 @@ async function submitDonationForm(event) {
 
 // Load initial rows on page load
 document.addEventListener("DOMContentLoaded", populateInitialRows);
-
-
-
-// Load initial rows on page load
-document.addEventListener('DOMContentLoaded', populateInitialRows);
