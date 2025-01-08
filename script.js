@@ -38,7 +38,7 @@ async function populateInitialRows() {
   });
 }
 
-// Submit form using Sheety API
+// Submit form using Sheety (loop approach)
 async function submitDonationForm(event) {
   event.preventDefault(); // Prevent default form submission
 
@@ -66,7 +66,7 @@ async function submitDonationForm(event) {
       "processed-item": "",
       "processed-rarity": "",
       "processed-quantity": "",
-      timestamp: new Date().toISOString() // optional: ISO timestamp
+      timestamp: new Date().toISOString()
     });
   }
 
@@ -80,41 +80,40 @@ async function submitDonationForm(event) {
       "processed-item": processedItems[i],
       "processed-rarity": raritiesProcessed[i],
       "processed-quantity": quantitiesProcessed[i],
-      timestamp: new Date().toISOString() // optional: ISO timestamp
+      timestamp: new Date().toISOString()
     });
   }
 
-  // Sheety expects an object whose key is the sheet name, 
-  // and the value is either a single object or an array of objects.
-  // Since we're sending multiple rows, pass an array.
-  const data = {
-    sheet1: rows
-  };
-
+  // Sheety base URL
+  // If your Sheety tab is actually named something else, replace "sheet1" below
   const sheetyUrl = "https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1";
-
-  console.log("Submitting data to:", sheetyUrl);
-  console.log("Data being sent:", JSON.stringify(data));
-
+  
   try {
-    const response = await fetch(sheetyUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    // 1) Insert each row individually in a loop
+    for (let row of rows) {
+      // Each POST must be a single object under "sheet1" (if the tab is called 'sheet1')
+      let body = {
+        sheet1: row
+      };
 
-    if (response.ok) {
-      const json = await response.json();
-      console.log("Server Response:", json);
-      document.getElementById('form-container').style.display = 'none';
-      document.getElementById('success-message').style.display = 'block';
-    } else {
-      const errorText = await response.text();
-      console.error("Server response failed:", errorText);
-      alert("Failed to submit donation. Server responded with: " + errorText);
+      const response = await fetch(sheetyUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server response failed:", errorText);
+        alert("Failed to submit donation. Server responded with: " + errorText);
+        return; // Stop if any row fails
+      }
     }
+
+    // 2) If we get here, all rows have been inserted successfully
+    document.getElementById('form-container').style.display = 'none';
+    document.getElementById('success-message').style.display = 'block';
+
   } catch (error) {
     console.error("Error submitting donation:", error);
     alert("An error occurred while submitting your donation: " + error.message);
