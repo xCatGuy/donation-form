@@ -2,20 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Donation Form</title>
+
   <!-- Include jQuery before Select2 -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link
+    href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+    rel="stylesheet"
+  />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="script.js" defer></script>
+
   <style>
-    /* General Styling */
+    /********************************************************
+      GLOBAL STYLES
+    ********************************************************/
     body {
       font-family: 'Roboto', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #121212;
+      /* A subtle dark gradient background for modern feel */
+      background: linear-gradient(135deg, #1c1c1c, #121212);
       color: #e0e0e0;
       display: flex;
       flex-direction: column;
@@ -27,7 +35,7 @@
     h1 {
       color: #ffffff;
       text-align: center;
-      font-size: 2.5rem;
+      font-size: 2.4rem;
       margin: 20px;
     }
 
@@ -38,13 +46,17 @@
       text-align: center;
     }
 
+    /********************************************************
+      FORM CONTAINER
+    ********************************************************/
     form {
       max-width: 900px;
       width: 100%;
       background-color: #1e1e1e;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+      /* Updated box-shadow for a more modern, subtle effect */
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
     }
 
     label {
@@ -63,6 +75,14 @@
       color: #fff;
       font-size: 1rem;
       box-sizing: border-box;
+      width: 100%;
+      transition: border-color 0.2s ease;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: #777;
     }
 
     .donation-row {
@@ -71,20 +91,19 @@
       gap: 15px;
       margin-bottom: 15px;
     }
-
     .donation-row > div {
       flex-grow: 1;
     }
-
     .donation-row > div:last-child {
       max-width: 120px;
     }
-
     .donation-row input[type="number"] {
-      width: 100%;
       text-align: center;
     }
 
+    /********************************************************
+      BUTTONS
+    ********************************************************/
     button {
       padding: 10px 20px;
       font-size: 1rem;
@@ -92,8 +111,11 @@
       border: none;
       cursor: pointer;
       min-width: 150px;
+      transition: background-color 0.2s ease, transform 0.2s ease;
     }
-
+    button:hover {
+      transform: translateY(-1px);
+    }
     button[type="button"] {
       background-color: #007bff;
       color: #fff;
@@ -123,6 +145,9 @@
       border-top: 1px solid #444;
     }
 
+    /********************************************************
+      SUCCESS MESSAGE
+    ********************************************************/
     .success-message {
       display: none;
       text-align: center;
@@ -132,21 +157,23 @@
       color: #4caf50;
       margin: 0 auto;
       border-radius: 10px;
-      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
     }
-
     .success-message h1 {
       font-size: 2rem;
       margin-bottom: 10px;
     }
-
     .success-message p {
       font-size: 1.1rem;
       color: #e0e0e0;
     }
 
+    /********************************************************
+      RESPONSIVE
+    ********************************************************/
     @media (max-width: 768px) {
-      form, .success-message {
+      form,
+      .success-message {
         padding: 20px;
       }
       .donation-row {
@@ -168,6 +195,7 @@
   <div id="form-container">
     <h1>Donation Form</h1>
     <form id="donationForm" onsubmit="submitDonationForm(event)">
+      <!-- Username is the only required field -->
       <label for="username">Username:</label>
       <input type="text" name="username" id="username" required />
 
@@ -176,11 +204,13 @@
         <div class="donation-row">
           <div>
             <label for="material-item">Raw Material:</label>
-            <select name="material-item[]" class="material-dropdown" required></select>
+            <!-- Remove required so it's optional -->
+            <select name="material-item[]" class="material-dropdown"></select>
           </div>
           <div>
             <label for="material-rarity">Rarity:</label>
-            <select name="material-rarity[]" required>
+            <select name="material-rarity[]" class="material-rarity-dropdown">
+              <option value="">--Optional--</option>
               <option value="Common">Common</option>
               <option value="Uncommon">Uncommon</option>
               <option value="Rare">Rare</option>
@@ -191,7 +221,7 @@
           </div>
           <div>
             <label for="material-quantity">Quantity:</label>
-            <input type="number" name="material-quantity[]" min="1" required />
+            <input type="number" name="material-quantity[]" min="1"/>
           </div>
         </div>
       </div>
@@ -202,11 +232,12 @@
         <div class="donation-row">
           <div>
             <label for="processed-item">Processed Item:</label>
-            <select name="processed-item[]" class="processed-dropdown" required></select>
+            <select name="processed-item[]" class="processed-dropdown"></select>
           </div>
           <div>
             <label for="processed-rarity">Rarity:</label>
-            <select name="processed-rarity[]" required>
+            <select name="processed-rarity[]" class="processed-rarity-dropdown">
+              <option value="">--Optional--</option>
               <option value="Common">Common</option>
               <option value="Uncommon">Uncommon</option>
               <option value="Rare">Rare</option>
@@ -217,7 +248,7 @@
           </div>
           <div>
             <label for="processed-quantity">Quantity:</label>
-            <input type="number" name="processed-quantity[]" min="1" required />
+            <input type="number" name="processed-quantity[]" min="1"/>
           </div>
         </div>
       </div>
