@@ -16,7 +16,6 @@ async function loadItemsForDropdown(file, dropdown) {
   }
 }
 
-// Function to populate dropdowns
 function populateDropdown(dropdown, items) {
   dropdown.innerHTML = ''; // Clear existing options
   items.forEach(item => {
@@ -27,7 +26,6 @@ function populateDropdown(dropdown, items) {
   });
 }
 
-// Function to populate initial rows
 async function populateInitialRows() {
   const materialDropdown = document.querySelector('.material-dropdown');
   const processedDropdown = document.querySelector('.processed-dropdown');
@@ -46,39 +44,35 @@ async function populateInitialRows() {
   2) SUBMIT FORM (ONE ROW PER DONATION)
 ********************************************************/
 
-// Submit form using Sheety (single-row approach)
 async function submitDonationForm(event) {
   event.preventDefault(); // Prevent default form submission
 
-  // Get all form data
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
-  // Basic fields
-  const username = formData.get('username');
+  // Basic field
+  const userNameValue = formData.get('username'); // from <input name="username">
 
-  // Arrays
+  // Arrays from our multiple Material/Processed fields
   const materials = formData.getAll('material-item[]');
-  const raritiesMaterial = formData.getAll('material-rarity[]');
-  const quantitiesMaterial = formData.getAll('material-quantity[]');
+  const materialRarities = formData.getAll('material-rarity[]');
+  const materialQuantities = formData.getAll('material-quantity[]');
   const processedItems = formData.getAll('processed-item[]');
-  const raritiesProcessed = formData.getAll('processed-rarity[]');
-  const quantitiesProcessed = formData.getAll('processed-quantity[]');
+  const processedRarities = formData.getAll('processed-rarity[]');
+  const processedQuantities = formData.getAll('processed-quantity[]');
 
-  // Join each array into a single comma-separated string
+  // Combine each array into comma-separated strings
   const materialItemsStr = materials.join(', ');
-  const materialRaritiesStr = raritiesMaterial.join(', ');
-  const materialQuantitiesStr = quantitiesMaterial.join(', ');
+  const materialRaritiesStr = materialRarities.join(', ');
+  const materialQuantitiesStr = materialQuantities.join(', ');
   const processedItemsStr = processedItems.join(', ');
-  const processedRaritiesStr = raritiesProcessed.join(', ');
-  const processedQuantitiesStr = quantitiesProcessed.join(', ');
+  const processedRaritiesStr = processedRarities.join(', ');
+  const processedQuantitiesStr = processedQuantities.join(', ');
 
   // Build one row with all data
-  // These keys must match your sheet columns:
-  // Username, materialItem, materialRarity, materialQuantity,
-  // processedItem, processedRarity, processedQuantity, timestamp
+  // The keys must match your sheet columns EXACTLY (all-lowercase or as you prefer).
   const singleRow = {
-    Username: username,
+    username: userNameValue,           // 'username' matches the column 'username'
     materialItem: materialItemsStr,
     materialRarity: materialRaritiesStr,
     materialQuantity: materialQuantitiesStr,
@@ -88,12 +82,12 @@ async function submitDonationForm(event) {
     timestamp: new Date().toISOString()
   };
 
-  // Sheety expects { sheet1: {...} }, if your tab is named "sheet1"
+  // If your tab is called 'sheet1' in Sheety
   const body = {
     sheet1: singleRow
   };
 
-  // URL for your Sheety resource
+  // Your Sheety endpoint
   const sheetyUrl = "https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1";
 
   console.log("Submitting data to:", sheetyUrl);
@@ -102,16 +96,14 @@ async function submitDonationForm(event) {
   try {
     const response = await fetch(sheetyUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
 
     if (response.ok) {
       const json = await response.json();
       console.log("Server Response:", json);
-      // Hide form, show success message
+      // Hide form, show success
       document.getElementById('form-container').style.display = 'none';
       document.getElementById('success-message').style.display = 'block';
     } else {
