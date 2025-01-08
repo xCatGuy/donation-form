@@ -36,7 +36,7 @@ async function populateInitialRows() {
   });
 }
 
-// Submit form
+// Submit form using Sheety API
 async function submitDonationForm(event) {
   event.preventDefault(); // Prevent default form submission
 
@@ -44,22 +44,25 @@ async function submitDonationForm(event) {
   const formData = new FormData(form);
 
   const data = {
-    username: formData.get('username'),
-    "material-item[]": formData.getAll('material-item[]'),
-    "material-rarity[]": formData.getAll('material-rarity[]'),
-    "material-quantity[]": formData.getAll('material-quantity[]'),
-    "processed-item[]": formData.getAll('processed-item[]'),
-    "processed-rarity[]": formData.getAll('processed-rarity[]'),
-    "processed-quantity[]": formData.getAll('processed-quantity[]'),
+    sheet1: [
+      {
+        username: formData.get('username'),
+        "material-item": formData.getAll('material-item[]'),
+        "material-rarity": formData.getAll('material-rarity[]'),
+        "material-quantity": formData.getAll('material-quantity[]'),
+        "processed-item": formData.getAll('processed-item[]'),
+        "processed-rarity": formData.getAll('processed-rarity[]'),
+        "processed-quantity": formData.getAll('processed-quantity[]'),
+      }
+    ]
   };
 
-  console.log("Submitting data to:", "https://script.google.com/macros/s/AKfycbzzB4OWb6tM_wDEghz2AfPPO9fElrleAF-xs6FkhvrlFBKXXpvkXlQ0XuIzMWhoPJQI/exec");
+  console.log("Submitting data to:", "https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1");
   console.log("Data being sent:", JSON.stringify(data));
 
   try {
-    const response = await fetch("https://script.google.com/macros/s/AKfycbzzB4OWb6tM_wDEghz2AfPPO9fElrleAF-xs6FkhvrlFBKXXpvkXlQ0XuIzMWhoPJQI/exec", {
+    const response = await fetch("https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1", {
       method: "POST",
-      mode: 'cors', // Explicitly set CORS mode
       headers: {
         "Content-Type": "application/json",
       },
