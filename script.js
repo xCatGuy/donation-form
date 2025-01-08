@@ -1,3 +1,7 @@
+/********************************************************
+  1) LOAD AND POPULATE ITEMS
+********************************************************/
+
 // Function to load items into dropdowns
 async function loadItemsForDropdown(file, dropdown) {
   try {
@@ -38,14 +42,22 @@ async function populateInitialRows() {
   });
 }
 
-// Submit form using Sheety (loop approach)
+/********************************************************
+  2) SUBMIT FORM (ONE ROW PER DONATION)
+********************************************************/
+
+// Submit form using Sheety — single row approach
 async function submitDonationForm(event) {
   event.preventDefault(); // Prevent default form submission
 
+  // Get all form data
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
+  // Basic fields
   const username = formData.get('username');
+
+  // Arrays
   const materials = formData.getAll('material-item[]');
   const raritiesMaterial = formData.getAll('material-rarity[]');
   const quantitiesMaterial = formData.getAll('material-quantity[]');
@@ -53,74 +65,66 @@ async function submitDonationForm(event) {
   const raritiesProcessed = formData.getAll('processed-rarity[]');
   const quantitiesProcessed = formData.getAll('processed-quantity[]');
 
-  // Construct an array of rows
-  let rows = [];
+  // Join each array into a single comma-separated string
+  const materialItemsStr = materials.join(', ');
+  const materialRaritiesStr = raritiesMaterial.join(', ');
+  const materialQuantitiesStr = quantitiesMaterial.join(', ');
+  const processedItemsStr = processedItems.join(', ');
+  const processedRaritiesStr = raritiesProcessed.join(', ');
+  const processedQuantitiesStr = quantitiesProcessed.join(', ');
 
-  // Add rows for raw materials
-  for (let i = 0; i < materials.length; i++) {
-    rows.push({
-      username: username,
-      "material-item": materials[i],
-      "material-rarity": raritiesMaterial[i],
-      "material-quantity": quantitiesMaterial[i],
-      "processed-item": "",
-      "processed-rarity": "",
-      "processed-quantity": "",
-      timestamp: new Date().toISOString()
-    });
-  }
+  // Build one row with all data
+  const singleRow = {
+    username: username,
+    "material-item": materialItemsStr,
+    "material-rarity": materialRaritiesStr,
+    "material-quantity": materialQuantitiesStr,
+    "processed-item": processedItemsStr,
+    "processed-rarity": processedRaritiesStr,
+    "processed-quantity": processedQuantitiesStr,
+    timestamp: new Date().toISOString()
+  };
 
-  // Add rows for processed items
-  for (let i = 0; i < processedItems.length; i++) {
-    rows.push({
-      username: username,
-      "material-item": "",
-      "material-rarity": "",
-      "material-quantity": "",
-      "processed-item": processedItems[i],
-      "processed-rarity": raritiesProcessed[i],
-      "processed-quantity": quantitiesProcessed[i],
-      timestamp: new Date().toISOString()
-    });
-  }
+  // Sheety expects { sheet1: {...} } if your sheet is named "sheet1"
+  const body = {
+    sheet1: singleRow
+  };
 
-  // Sheety base URL
-  // If your Sheety tab is actually named something else, replace "sheet1" below
+  // URL for your Sheety resource
   const sheetyUrl = "https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1";
-  
+
+  console.log("Submitting data to:", sheetyUrl);
+  console.log("Data being sent:", JSON.stringify(body));
+
   try {
-    // 1) Insert each row individually in a loop
-    for (let row of rows) {
-      // Each POST must be a single object under "sheet1" (if the tab is called 'sheet1')
-      let body = {
-        sheet1: row
-      };
+    const response = await fetch(sheetyUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
 
-      const response = await fetch(sheetyUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Server response failed:", errorText);
-        alert("Failed to submit donation. Server responded with: " + errorText);
-        return; // Stop if any row fails
-      }
+    if (response.ok) {
+      const json = await response.json();
+      console.log("Server Response:", json);
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('success-message').style.display = 'block';
+    } else {
+      const errorText = await response.text();
+      console.error("Server response failed:", errorText);
+      alert("Failed to submit donation. Server responded with: " + errorText);
     }
-
-    // 2) If we get here, all rows have been inserted successfully
-    document.getElementById('form-container').style.display = 'none';
-    document.getElementById('success-message').style.display = 'block';
-
   } catch (error) {
     console.error("Error submitting donation:", error);
     alert("An error occurred while submitting your donation: " + error.message);
   }
 }
 
-// Add extra material row
+/********************************************************
+  3) ADD EXTRA MATERIAL ROW
+********************************************************/
+
 function addMaterialRow() {
   const materialRows = document.getElementById('materialRows');
   const newRow = document.createElement('div');
@@ -157,7 +161,10 @@ function addMaterialRow() {
   loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
 }
 
-// Add extra processed item row
+/********************************************************
+  4) ADD EXTRA PROCESSED ITEM ROW
+********************************************************/
+
 function addProcessedRow() {
   const processedRows = document.getElementById('processedRows');
   const newRow = document.createElement('div');
@@ -194,10 +201,16 @@ function addProcessedRow() {
   loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
 }
 
-// Reset form
+/********************************************************
+  5) RESET FORM
+********************************************************/
+
 function resetForm() {
   document.getElementById('donationForm').reset();
 }
 
-// Load initial rows on page load
+/********************************************************
+  6) ON PAGE LOAD
+********************************************************/
+
 document.addEventListener("DOMContentLoaded", populateInitialRows);
