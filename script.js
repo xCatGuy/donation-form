@@ -53,11 +53,11 @@ async function submitDonationForm(event) {
     "processed-quantity[]": formData.getAll('processed-quantity[]'),
   };
 
-  console.log("Submitting data to:", "https://script.google.com/macros/s/AKfycbwlXqIGqW2nYAt01JPq-Tti0xX7UU9JMj_-CTlVeH4F_AJMRCtUGQ8sXA0PytIlqcrqwQ/exec");
+  console.log("Submitting data to:", "https://script.google.com/macros/s/AKfycbzD67KU1k8klmHjtUUTMpgzDqWOWtXqgB9dfcBIq25hwSGGkhJz0DSMCLhTed3sjv1rXg/exec");
   console.log("Data being sent:", JSON.stringify(data));
 
   try {
-    const response = await fetch("https://script.google.com/macros/s/AKfycbwlXqIGqW2nYAt01JPq-Tti0xX7UU9JMj_-CTlVeH4F_AJMRCtUGQ8sXA0PytIlqcrqwQ/exec", {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbzD67KU1k8klmHjtUUTMpgzDqWOWtXqgB9dfcBIq25hwSGGkhJz0DSMCLhTed3sjv1rXg/exec", {
       method: "POST",
       mode: 'cors', // Explicitly set CORS mode
       headers: {
@@ -80,6 +80,85 @@ async function submitDonationForm(event) {
     console.error("Error submitting donation:", error);
     alert("An error occurred while submitting your donation: " + error.message);
   }
+}
+
+// Add extra material row
+function addMaterialRow() {
+  const materialRows = document.getElementById('materialRows');
+  const newRow = document.createElement('div');
+  newRow.classList.add('donation-row');
+
+  newRow.innerHTML = `
+    <div>
+      <label for="material-item">Raw Material:</label>
+      <select name="material-item[]" class="material-dropdown" required></select>
+    </div>
+    <div>
+      <label for="material-rarity">Rarity:</label>
+      <select name="material-rarity[]" required>
+        <option value="Common">Common</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Rare">Rare</option>
+        <option value="Heroic">Heroic</option>
+        <option value="Epic">Epic</option>
+        <option value="Legendary">Legendary</option>
+      </select>
+    </div>
+    <div>
+      <label for="material-quantity">Quantity:</label>
+      <input type="number" name="material-quantity[]" min="1" required />
+    </div>
+  `;
+
+  materialRows.appendChild(newRow);
+
+  // Re-initialize Select2 for the new row's dropdown
+  $(newRow).find('.material-dropdown').select2();
+
+  // Load items into the new material dropdown
+  loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
+}
+
+// Add extra processed item row
+function addProcessedRow() {
+  const processedRows = document.getElementById('processedRows');
+  const newRow = document.createElement('div');
+  newRow.classList.add('donation-row');
+
+  newRow.innerHTML = `
+    <div>
+      <label for="processed-item">Processed Item:</label>
+      <select name="processed-item[]" class="processed-dropdown" required></select>
+    </div>
+    <div>
+      <label for="processed-rarity">Rarity:</label>
+      <select name="processed-rarity[]" required>
+        <option value="Common">Common</option>
+        <option value="Uncommon">Uncommon</option>
+        <option value="Rare">Rare</option>
+        <option value="Heroic">Heroic</option>
+        <option value="Epic">Epic</option>
+        <option value="Legendary">Legendary</option>
+      </select>
+    </div>
+    <div>
+      <label for="processed-quantity">Quantity:</label>
+      <input type="number" name="processed-quantity[]" min="1" required />
+    </div>
+  `;
+
+  processedRows.appendChild(newRow);
+
+  // Re-initialize Select2 for the new row's dropdown
+  $(newRow).find('.processed-dropdown').select2();
+
+  // Load items into the new processed dropdown
+  loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
+}
+
+// Reset form
+function resetForm() {
+  document.getElementById('donationForm').reset();
 }
 
 // Load initial rows on page load
