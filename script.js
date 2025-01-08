@@ -161,7 +161,7 @@ async function submitDonationForm(event) {
     const response = await fetch(
       "https://script.google.com/macros/s/AKfycbygZO_ISJnQxwArVLQWOoIkHMVUlWxuy1HRvnBfzc2ISmZE7jQ99TxJ3amVvqklvqw/exec",
       {
-        method: 'POST',
+        method: 'POST', // Ensure POST is used
         headers: {
           'Content-Type': 'application/json',
         },
