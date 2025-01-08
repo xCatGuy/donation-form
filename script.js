@@ -18,6 +18,13 @@ async function loadItemsForDropdown(file, dropdown) {
 
 function populateDropdown(dropdown, items) {
   dropdown.innerHTML = ''; // Clear existing options
+
+  // Optional placeholder
+  const placeholderOption = document.createElement('option');
+  placeholderOption.value = '';
+  placeholderOption.textContent = '-- Select an option --';
+  dropdown.appendChild(placeholderOption);
+
   items.forEach(item => {
     const option = document.createElement('option');
     option.value = item.name;
@@ -50,10 +57,10 @@ async function submitDonationForm(event) {
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
-  // Basic field
-  const userNameValue = formData.get('username'); // from <input name="username">
+  // Basic field (the only required one)
+  const userNameValue = formData.get('username');
 
-  // Arrays from our multiple Material/Processed fields
+  // Arrays from optional Material/Processed fields
   const materials = formData.getAll('material-item[]');
   const materialRarities = formData.getAll('material-rarity[]');
   const materialQuantities = formData.getAll('material-quantity[]');
@@ -61,18 +68,18 @@ async function submitDonationForm(event) {
   const processedRarities = formData.getAll('processed-rarity[]');
   const processedQuantities = formData.getAll('processed-quantity[]');
 
-  // Combine each array into comma-separated strings
-  const materialItemsStr = materials.join(', ');
-  const materialRaritiesStr = materialRarities.join(', ');
-  const materialQuantitiesStr = materialQuantities.join(', ');
-  const processedItemsStr = processedItems.join(', ');
-  const processedRaritiesStr = processedRarities.join(', ');
-  const processedQuantitiesStr = processedQuantities.join(', ');
+  // Combine each array into comma-separated strings (even if empty)
+  const materialItemsStr = materials.filter(Boolean).join(', ');
+  const materialRaritiesStr = materialRarities.filter(Boolean).join(', ');
+  const materialQuantitiesStr = materialQuantities.filter(Boolean).join(', ');
+  const processedItemsStr = processedItems.filter(Boolean).join(', ');
+  const processedRaritiesStr = processedRarities.filter(Boolean).join(', ');
+  const processedQuantitiesStr = processedQuantities.filter(Boolean).join(', ');
 
   // Build one row with all data
-  // The keys must match your sheet columns EXACTLY (all-lowercase or as you prefer).
+  // The keys must match your sheet columns EXACTLY
   const singleRow = {
-    username: userNameValue,           // 'username' matches the column 'username'
+    username: userNameValue,  // 'username' matches the column 'username'
     materialItem: materialItemsStr,
     materialRarity: materialRaritiesStr,
     materialQuantity: materialQuantitiesStr,
@@ -82,7 +89,7 @@ async function submitDonationForm(event) {
     timestamp: new Date().toISOString()
   };
 
-  // If your tab is called 'sheet1' in Sheety
+  // If your Sheety tab is called "sheet1"
   const body = {
     sheet1: singleRow
   };
@@ -129,11 +136,12 @@ function addMaterialRow() {
   newRow.innerHTML = `
     <div>
       <label for="material-item">Raw Material:</label>
-      <select name="material-item[]" class="material-dropdown" required></select>
+      <select name="material-item[]" class="material-dropdown"></select>
     </div>
     <div>
       <label for="material-rarity">Rarity:</label>
-      <select name="material-rarity[]" required>
+      <select name="material-rarity[]" class="material-rarity-dropdown">
+        <option value="">--Optional--</option>
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -144,14 +152,14 @@ function addMaterialRow() {
     </div>
     <div>
       <label for="material-quantity">Quantity:</label>
-      <input type="number" name="material-quantity[]" min="1" required />
+      <input type="number" name="material-quantity[]" min="1"/>
     </div>
   `;
 
   materialRows.appendChild(newRow);
 
-  // Re-initialize Select2 for the new row's dropdown
-  $(newRow).find('.material-dropdown').select2();
+  // Re-init Select2 for the new dropdown
+  $(newRow).find('.material-dropdown, .material-rarity-dropdown').select2();
 
   // Load items into the new material dropdown
   loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
@@ -169,11 +177,12 @@ function addProcessedRow() {
   newRow.innerHTML = `
     <div>
       <label for="processed-item">Processed Item:</label>
-      <select name="processed-item[]" class="processed-dropdown" required></select>
+      <select name="processed-item[]" class="processed-dropdown"></select>
     </div>
     <div>
       <label for="processed-rarity">Rarity:</label>
-      <select name="processed-rarity[]" required>
+      <select name="processed-rarity[]" class="processed-rarity-dropdown">
+        <option value="">--Optional--</option>
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -184,14 +193,14 @@ function addProcessedRow() {
     </div>
     <div>
       <label for="processed-quantity">Quantity:</label>
-      <input type="number" name="processed-quantity[]" min="1" required />
+      <input type="number" name="processed-quantity[]" min="1"/>
     </div>
   `;
 
   processedRows.appendChild(newRow);
 
-  // Re-initialize Select2 for the new row's dropdown
-  $(newRow).find('.processed-dropdown').select2();
+  // Re-init Select2 for the new dropdown
+  $(newRow).find('.processed-dropdown, .processed-rarity-dropdown').select2();
 
   // Load items into the new processed dropdown
   loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
