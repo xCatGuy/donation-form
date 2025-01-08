@@ -159,7 +159,7 @@ async function submitDonationForm(event) {
 
   try {
     const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbypESG3e5kADT1TgMJ0R5wZmPVDNGtdAq0KDUQEYtyzPpZM6gUhj_ZUw4A1fh2hfZ5QHg/exec",
+      "https://script.google.com/macros/s/AKfycbygZO_ISJnQxwArVLQWOoIkHMVUlWxuy1HRvnBfzc2ISmZE7jQ99TxJ3amVvqklvqw/exec",
       {
         method: 'POST',
         headers: {
