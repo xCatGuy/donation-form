@@ -29,6 +29,9 @@ async function populateInitialRows() {
   const processedDropdown = document.querySelector('.processed-dropdown');
   await loadItemsForDropdown('raw-items.json', materialDropdown);
   await loadItemsForDropdown('processed-items.json', processedDropdown);
+
+  // Initialize Select2 after populating items
+  $('.material-dropdown, .processed-dropdown').select2();
 }
 
 // Add new Material row
@@ -47,6 +50,7 @@ async function addMaterialRow() {
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
+        <option value="Heroic">Heroic</option>
         <option value="Epic">Epic</option>
         <option value="Legendary">Legendary</option>
       </select>
@@ -58,6 +62,9 @@ async function addMaterialRow() {
   materialRows.appendChild(newRow);
   const dropdown = newRow.querySelector('.material-dropdown');
   await loadItemsForDropdown('raw-items.json', dropdown);
+
+  // Reinitialize Select2 for new dropdown
+  $('.material-dropdown').select2();
 }
 
 // Add new Processed row
@@ -76,6 +83,7 @@ async function addProcessedRow() {
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
+        <option value="Heroic">Heroic</option>
         <option value="Epic">Epic</option>
         <option value="Legendary">Legendary</option>
       </select>
@@ -87,6 +95,9 @@ async function addProcessedRow() {
   processedRows.appendChild(newRow);
   const dropdown = newRow.querySelector('.processed-dropdown');
   await loadItemsForDropdown('processed-items.json', dropdown);
+
+  // Reinitialize Select2 for new dropdown
+  $('.processed-dropdown').select2();
 }
 
 // Reset form
@@ -104,6 +115,7 @@ async function resetForm() {
           <option value="Common">Common</option>
           <option value="Uncommon">Uncommon</option>
           <option value="Rare">Rare</option>
+          <option value="Heroic">Heroic</option>
           <option value="Epic">Epic</option>
           <option value="Legendary">Legendary</option>
         </select>
@@ -125,6 +137,7 @@ async function resetForm() {
           <option value="Common">Common</option>
           <option value="Uncommon">Uncommon</option>
           <option value="Rare">Rare</option>
+          <option value="Heroic">Heroic</option>
           <option value="Epic">Epic</option>
           <option value="Legendary">Legendary</option>
         </select>
@@ -135,6 +148,9 @@ async function resetForm() {
       </div>
     </div>`;
   await populateInitialRows();
+
+  // Reinitialize Select2 after resetting rows
+  $('.material-dropdown, .processed-dropdown').select2();
 }
 
 // Submit form
@@ -159,9 +175,9 @@ async function submitDonationForm(event) {
 
   try {
     const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbyHTbkuVE1z6Hhdp6ucbvJrDmRSE5VjQGeN6jycgWWW7cEnpy9HJJpR1Xv63__1G0qf_Q/exec",
+      "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec",
       {
-        method: 'POST', // Ensure POST is used
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
