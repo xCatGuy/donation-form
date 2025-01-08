@@ -176,11 +176,11 @@ async function submitDonationForm(event) {
 
   try {
     const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbyHTbkuVE1z6Hhdp6ucbvJrDmRSE5VjQGeN6jycgWWW7cEnpy9HJJpR1Xv63__1G0qf_Q/exec",
+      "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec",
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data), // Serialize to JSON string
       }
@@ -193,14 +193,18 @@ async function submitDonationForm(event) {
       document.getElementById('success-message').style.display = 'block';
     } else {
       const errorText = await response.text();
-      console.error('Server response failed:', errorText);
-      alert('Failed to submit donation. Server responded with: ' + errorText);
+      console.error("Server response failed:", errorText);
+      alert("Failed to submit donation. Server responded with: " + errorText);
     }
   } catch (error) {
-    console.error('Error submitting donation:', error);
-    alert('An error occurred while submitting your donation: ' + error.message);
+    console.error("Error submitting donation:", error);
+    alert("An error occurred while submitting your donation: " + error.message);
   }
 }
+
+// Load initial rows on page load
+document.addEventListener("DOMContentLoaded", populateInitialRows);
+
 
 
 // Load initial rows on page load
