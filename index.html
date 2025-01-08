@@ -73,16 +73,16 @@
     }
 
     .donation-row > div {
-      flex-grow: 1; /* Ensures all elements grow proportionally */
+      flex-grow: 1;
     }
 
     .donation-row > div:last-child {
-      max-width: 120px; /* Quantity field smaller and aligned */
+      max-width: 120px;
     }
 
     .donation-row input[type="number"] {
-      width: 100%; /* Ensure it adjusts based on parent width */
-      text-align: center; /* Center-align the number input text */
+      width: 100%;
+      text-align: center;
     }
 
     button {
@@ -98,16 +98,13 @@
       background-color: #007bff;
       color: #fff;
     }
-
     button[type="button"]:hover {
       background-color: #0056b3;
     }
-
     button[type="submit"] {
       background-color: #4caf50;
       color: #fff;
     }
-
     button[type="submit"]:hover {
       background-color: #3e8e41;
     }
@@ -152,17 +149,14 @@
       form, .success-message {
         padding: 20px;
       }
-
       .donation-row {
         flex-direction: column;
         gap: 10px;
       }
-
       .donation-row > div {
         flex-grow: 1;
         max-width: 100%;
       }
-
       .button-container {
         flex-direction: column;
         align-items: center;
@@ -182,7 +176,6 @@
         <div class="donation-row">
           <div>
             <label for="material-item">Raw Material:</label>
-            <!-- name attribute can have hyphens; we just parse it in script.js -->
             <select name="material-item[]" class="material-dropdown" required></select>
           </div>
           <div>
