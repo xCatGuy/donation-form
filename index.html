@@ -189,6 +189,42 @@
         align-items: center;
       }
     }
+
+    /********************************************************
+      SELECT2 DARK MODE STYLING
+    ********************************************************/
+    /* Container for the selected item */
+    .select2-container .select2-selection--single {
+      background-color: #2c2c2c !important;
+      border: 1px solid #444 !important;
+      color: #fff !important;
+      border-radius: 5px;
+      height: 42px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: #fff transparent transparent transparent !important;
+    }
+    /* On open, arrow flips color */
+    .select2-container--open .select2-selection--single .select2-selection__arrow b {
+      border-color: transparent transparent #fff transparent !important;
+    }
+    /* Text inside the selected item */
+    .select2-selection__rendered {
+      color: #fff !important;
+      line-height: 40px !important;
+    }
+    /* The dropdown itself */
+    .select2-container .select2-dropdown {
+      background-color: #2c2c2c !important;
+      border: 1px solid #444 !important;
+      color: #fff !important;
+    }
+    .select2-results__option {
+      padding: 10px !important;
+    }
+    .select2-results__option--highlighted {
+      background-color: #444 !important;
+    }
   </style>
 </head>
 <body>
@@ -204,7 +240,7 @@
         <div class="donation-row">
           <div>
             <label for="material-item">Raw Material:</label>
-            <!-- Remove required so it's optional -->
+            <!-- No 'required' => optional -->
             <select name="material-item[]" class="material-dropdown"></select>
           </div>
           <div>
