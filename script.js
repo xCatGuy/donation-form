@@ -44,17 +44,15 @@ async function submitDonationForm(event) {
   const formData = new FormData(form);
 
   const data = {
-    sheet1: [
-      {
-        username: formData.get('username'),
-        "material-item": formData.getAll('material-item[]'),
-        "material-rarity": formData.getAll('material-rarity[]'),
-        "material-quantity": formData.getAll('material-quantity[]'),
-        "processed-item": formData.getAll('processed-item[]'),
-        "processed-rarity": formData.getAll('processed-rarity[]'),
-        "processed-quantity": formData.getAll('processed-quantity[]'),
-      }
-    ]
+    sheet1: {
+      username: formData.get('username'),
+      "material-item": formData.getAll('material-item[]').join(', '), // Join array into a string if needed
+      "material-rarity": formData.getAll('material-rarity[]').join(', '),
+      "material-quantity": formData.getAll('material-quantity[]').join(', '),
+      "processed-item": formData.getAll('processed-item[]').join(', '),
+      "processed-rarity": formData.getAll('processed-rarity[]').join(', '),
+      "processed-quantity": formData.getAll('processed-quantity[]').join(', '),
+    }
   };
 
   console.log("Submitting data to:", "https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1");
@@ -70,8 +68,8 @@ async function submitDonationForm(event) {
     });
 
     if (response.ok) {
-      const result = await response.json();
-      console.log("Server Response:", result);
+      const json = await response.json();
+      console.log("Server Response:", json.sheet1);
       document.getElementById('form-container').style.display = 'none';
       document.getElementById('success-message').style.display = 'block';
     } else {
