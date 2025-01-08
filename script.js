@@ -46,7 +46,7 @@ async function populateInitialRows() {
   2) SUBMIT FORM (ONE ROW PER DONATION)
 ********************************************************/
 
-// Submit form using Sheety — single row approach
+// Submit form using Sheety (single-row approach)
 async function submitDonationForm(event) {
   event.preventDefault(); // Prevent default form submission
 
@@ -74,9 +74,11 @@ async function submitDonationForm(event) {
   const processedQuantitiesStr = quantitiesProcessed.join(', ');
 
   // Build one row with all data
+  // These keys must match your sheet columns:
+  // Username, materialItem, materialRarity, materialQuantity,
+  // processedItem, processedRarity, processedQuantity, timestamp
   const singleRow = {
-    username: username,
-    // Convert "material-item" => "materialItem", etc.
+    Username: username,
     materialItem: materialItemsStr,
     materialRarity: materialRaritiesStr,
     materialQuantity: materialQuantitiesStr,
@@ -86,7 +88,7 @@ async function submitDonationForm(event) {
     timestamp: new Date().toISOString()
   };
 
-  // Sheety expects { sheet1: {...} } if your sheet is named "sheet1"
+  // Sheety expects { sheet1: {...} }, if your tab is named "sheet1"
   const body = {
     sheet1: singleRow
   };
@@ -109,6 +111,7 @@ async function submitDonationForm(event) {
     if (response.ok) {
       const json = await response.json();
       console.log("Server Response:", json);
+      // Hide form, show success message
       document.getElementById('form-container').style.display = 'none';
       document.getElementById('success-message').style.display = 'block';
     } else {
