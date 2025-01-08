@@ -59,6 +59,7 @@ async function submitDonationForm(event) {
   try {
     const response = await fetch("https://script.google.com/macros/s/AKfycbwlXqIGqW2nYAt01JPq-Tti0xX7UU9JMj_-CTlVeH4F_AJMRCtUGQ8sXA0PytIlqcrqwQ/exec", {
       method: "POST",
+      mode: 'cors', // Explicitly set CORS mode
       headers: {
         "Content-Type": "application/json",
       },
