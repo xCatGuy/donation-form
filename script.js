@@ -100,7 +100,7 @@ async function submitDonationForm(event) {
   const processedRarities = formData.getAll('processed-rarity[]');
   const processedQuantities = formData.getAll('processed-quantity[]');
 
-  // Filter empty and join for better display (avoid trailing commas if blank)
+  // Filter out empty strings (so we don't get trailing commas)
   const materialItemsStr = materials.filter(Boolean).join(', ');
   const materialRaritiesStr = materialRarities.filter(Boolean).join(', ');
   const materialQuantitiesStr = materialQuantities.filter(Boolean).join(', ');
@@ -109,9 +109,8 @@ async function submitDonationForm(event) {
   const processedQuantitiesStr = processedQuantities.filter(Boolean).join(', ');
 
   // Build one row with all data
-  // The keys must match your sheet columns EXACTLY
   const singleRow = {
-    username: userNameValue,  // 'username' matches the column 'username'
+    username: userNameValue,  // must match the 'username' column in your sheet
     materialItem: materialItemsStr,
     materialRarity: materialRaritiesStr,
     materialQuantity: materialQuantitiesStr,
@@ -142,6 +141,10 @@ async function submitDonationForm(event) {
     if (response.ok) {
       const json = await response.json();
       console.log("Server Response:", json);
+
+      // *** Reset the form here ***
+      form.reset();
+
       // Hide form, show success
       document.getElementById('form-container').style.display = 'none';
       document.getElementById('success-message').style.display = 'block';
@@ -164,7 +167,6 @@ function addMaterialRow() {
   const newRow = document.createElement('div');
   newRow.classList.add('donation-row');
 
-  // Just replicate the same HTML, but no 'required'
   newRow.innerHTML = `
     <div>
       <label for="material-item">Raw Material:</label>
@@ -193,7 +195,7 @@ function addMaterialRow() {
   // Re-init Select2 after we add the new row
   $(newRow).find('.material-dropdown, .material-rarity-dropdown').select2();
 
-  // Load items into the new material dropdown (with groups)
+  // Load items into the new material dropdown
   loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
 }
 
@@ -233,7 +235,7 @@ function addProcessedRow() {
   // Re-init Select2 for the new row
   $(newRow).find('.processed-dropdown, .processed-rarity-dropdown').select2();
 
-  // Load items into the new processed dropdown (with groups)
+  // Load items into the new processed dropdown
   loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
 }
 
