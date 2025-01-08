@@ -24,7 +24,8 @@ async function submitDonationForm(event) {
       "material-quantity": quantitiesMaterial[i],
       "processed-item": "",
       "processed-rarity": "",
-      "processed-quantity": ""
+      "processed-quantity": "",
+      "timestamp": new Date().toISOString() // Adding timestamp
     });
   }
 
@@ -37,7 +38,8 @@ async function submitDonationForm(event) {
       "material-quantity": "",
       "processed-item": processedItems[i],
       "processed-rarity": raritiesProcessed[i],
-      "processed-quantity": quantitiesProcessed[i]
+      "processed-quantity": quantitiesProcessed[i],
+      "timestamp": new Date().toISOString() // Adding timestamp
     });
   }
 
