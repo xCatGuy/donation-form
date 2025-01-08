@@ -7,6 +7,166 @@
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="script.js" defer></script>
+  <style>
+    /* General Styling */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #ffffff;
+      text-align: center;
+      font-size: 2.5rem;
+      margin: 20px;
+    }
+
+    h2 {
+      color: #eeeeee;
+      font-size: 1.5rem;
+      margin: 20px 0 10px;
+      text-align: center;
+    }
+
+    form {
+      max-width: 900px;
+      width: 100%;
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #2c2c2c;
+      border: 1px solid #444;
+      color: #fff;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .donation-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .donation-row > div {
+      flex-grow: 1; /* Ensures all elements grow proportionally */
+    }
+
+    .donation-row > div:last-child {
+      max-width: 120px; /* Quantity field smaller and aligned */
+    }
+
+    .donation-row input[type="number"] {
+      width: 100%; /* Ensure it adjusts based on parent width */
+      text-align: center; /* Center-align the number input text */
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      min-width: 150px;
+    }
+
+    button[type="button"] {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    button[type="button"]:hover {
+      background-color: #0056b3;
+    }
+
+    button[type="submit"] {
+      background-color: #4caf50;
+      color: #fff;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #3e8e41;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .separator {
+      margin: 30px 0;
+      border-top: 1px solid #444;
+    }
+
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      max-width: 600px;
+      background: #1e1e1e;
+      color: #4caf50;
+      margin: 0 auto;
+      border-radius: 10px;
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .success-message h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .success-message p {
+      font-size: 1.1rem;
+      color: #e0e0e0;
+    }
+
+    @media (max-width: 768px) {
+      form, .success-message {
+        padding: 20px;
+      }
+
+      .donation-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .donation-row > div {
+        flex-grow: 1;
+        max-width: 100%;
+      }
+
+      .button-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="form-container">
@@ -39,9 +199,7 @@
           </div>
         </div>
       </div>
-      <div style="text-align: center; margin-top: 10px;">
-        <button type="button" onclick="addMaterialRow()">Add Material</button>
-      </div>
+      <button type="button" onclick="addMaterialRow()">Add Material</button>
 
       <h2>Processed Items</h2>
       <div id="processedRows">
@@ -67,17 +225,17 @@
           </div>
         </div>
       </div>
-      <div style="text-align: center; margin-top: 10px;">
-        <button type="button" onclick="addProcessedRow()">Add Processed Item</button>
-      </div>
+      <button type="button" onclick="addProcessedRow()">Add Processed Item</button>
 
-      <div style="text-align: center; margin-top: 20px;">
+      <div class="separator"></div>
+      <div class="button-container">
         <button type="button" onclick="resetForm()">Reset Form</button>
         <button type="submit">Submit Donations</button>
       </div>
     </form>
   </div>
-  <div id="success-message" style="display: none; text-align: center;">
+
+  <div id="success-message" class="success-message">
     <h1>Thank You!</h1>
     <p>Your donation has been successfully submitted.</p>
   </div>
