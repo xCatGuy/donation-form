@@ -175,7 +175,7 @@ async function submitDonationForm(event) {
 
   try {
     const response = await fetch(
-      "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec",
+      "https://script.google.com/macros/s/AKfycbyHTbkuVE1z6Hhdp6ucbvJrDmRSE5VjQGeN6jycgWWW7cEnpy9HJJpR1Xv63__1G0qf_Q/exec",
       {
         method: 'POST',
         headers: {
