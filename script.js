@@ -76,12 +76,13 @@ async function submitDonationForm(event) {
   // Build one row with all data
   const singleRow = {
     username: username,
-    "material-item": materialItemsStr,
-    "material-rarity": materialRaritiesStr,
-    "material-quantity": materialQuantitiesStr,
-    "processed-item": processedItemsStr,
-    "processed-rarity": processedRaritiesStr,
-    "processed-quantity": processedQuantitiesStr,
+    // Convert "material-item" => "materialItem", etc.
+    materialItem: materialItemsStr,
+    materialRarity: materialRaritiesStr,
+    materialQuantity: materialQuantitiesStr,
+    processedItem: processedItemsStr,
+    processedRarity: processedRaritiesStr,
+    processedQuantity: processedQuantitiesStr,
     timestamp: new Date().toISOString()
   };
 
