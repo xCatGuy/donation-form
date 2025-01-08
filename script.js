@@ -171,12 +171,12 @@ async function submitDonationForm(event) {
     "processed-quantity[]": formData.getAll('processed-quantity[]'),
   };
 
-  console.log("Submitting data to:", "https://script.google.com/macros/s/AKfycbzjE8rCEVS56Sl5zn4librHH3osAa19AwU2Iq5afqdoLdNe44Wzqx_GfglZLass2DR5CQ/exec");
+  console.log("Submitting data to:", "https://script.google.com/macros/s/AKfycbwtP-bbomiUQR8IKLW7v9QThN5hhELQpzaEuyg-QDxuD6sVor_MhU8Z8uPmx1myN1e3VQ/exec");
   console.log("Data being sent:", JSON.stringify(data)); // Debugging log
 
   try {
     const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbzjE8rCEVS56Sl5zn4librHH3osAa19AwU2Iq5afqdoLdNe44Wzqx_GfglZLass2DR5CQ/exec",
+      "https://script.google.com/macros/s/AKfycbwtP-bbomiUQR8IKLW7v9QThN5hhELQpzaEuyg-QDxuD6sVor_MhU8Z8uPmx1myN1e3VQ/exec",
       {
         method: "POST",
         headers: {
