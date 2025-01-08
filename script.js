@@ -53,11 +53,11 @@ async function submitDonationForm(event) {
     "processed-quantity[]": formData.getAll('processed-quantity[]'),
   };
 
-  console.log("Submitting data to:", "https://script.google.com/macros/s/AKfycbzD67KU1k8klmHjtUUTMpgzDqWOWtXqgB9dfcBIq25hwSGGkhJz0DSMCLhTed3sjv1rXg/exec");
+  console.log("Submitting data to:", "https://script.google.com/macros/s/AKfycbwDt7ABC9yAusUuBR34gM7LIqUTeQLyjtXOpPuf9Oql1Ek3RplYieEOTlZWdBqu8fixIA/exec");
   console.log("Data being sent:", JSON.stringify(data));
 
   try {
-    const response = await fetch("https://script.google.com/macros/s/AKfycbzD67KU1k8klmHjtUUTMpgzDqWOWtXqgB9dfcBIq25hwSGGkhJz0DSMCLhTed3sjv1rXg/exec", {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbwDt7ABC9yAusUuBR34gM7LIqUTeQLyjtXOpPuf9Oql1Ek3RplYieEOTlZWdBqu8fixIA/exec", {
       method: "POST",
       mode: 'cors', // Explicitly set CORS mode
       headers: {
