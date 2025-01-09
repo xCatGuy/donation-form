@@ -1,5 +1,8 @@
 const IMGUR_CLIENT_ID = '8d85a8d7fae7127'; // Replace with your Imgur Client ID
 
+/**
+ * Function to upload an image to Imgur.
+ */
 async function uploadImage(file) {
   try {
     const formData = new FormData();
@@ -26,6 +29,9 @@ async function uploadImage(file) {
   }
 }
 
+/**
+ * Function to submit the donation form.
+ */
 async function submitDonationForm(event) {
   event.preventDefault();
 
@@ -42,7 +48,7 @@ async function submitDonationForm(event) {
     if (!imgUrl) return; // Stop submission if image upload fails
   }
 
-  // Gather data from optional dropdowns (filter empty values)
+  // Gather data from dropdowns (filter out empty values)
   const materials = formData.getAll('material-item[]').filter(Boolean).join(', ');
   const materialRarities = formData.getAll('material-rarity[]').filter(Boolean).join(', ');
   const materialQuantities = formData.getAll('material-quantity[]').filter(Boolean).join(', ');
@@ -78,6 +84,7 @@ async function submitDonationForm(event) {
 
     if (response.ok) {
       document.getElementById('donationForm').reset();
+      document.getElementById('imagePreview').innerHTML = ''; // Clear image preview
       document.getElementById('success-message').style.display = 'block';
       document.getElementById('form-container').style.display = 'none';
     } else {
@@ -90,29 +97,78 @@ async function submitDonationForm(event) {
   }
 }
 
-// Preview the uploaded image
-document.getElementById('image').addEventListener('change', (event) => {
-  const file = event.target.files[0];
-  const preview = document.getElementById('imagePreview');
-  preview.innerHTML = '';
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = document.createElement('img');
-      img.src = reader.result;
-      preview.appendChild(img);
-    };
-    reader.readAsDataURL(file);
+/**
+ * Function to load items into dropdowns.
+ */
+async function loadItemsForDropdown(file, dropdown) {
+  try {
+    const response = await fetch(file);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const items = await response.json();
+    console.log(`Loaded items for ${dropdown.name}:`, items);
+    populateDropdownWithGroups(dropdown, items);
+  } catch (error) {
+    console.error(`Error loading ${file}:`, error);
   }
-});
+}
 
-// Ensure dropdowns use Select2 styling and function properly
-document.addEventListener('DOMContentLoaded', () => {
-  $('.material-dropdown, .processed-dropdown, .material-rarity-dropdown, .processed-rarity-dropdown').select2();
-});
+/**
+ * Populates dropdowns with grouped items.
+ */
+function populateDropdownWithGroups(dropdown, items) {
+  dropdown.innerHTML = ''; // Clear existing options
 
-// Add new Material row
+  // Placeholder for no selection
+  const placeholderOption = document.createElement('option');
+  placeholderOption.value = '';
+  placeholderOption.textContent = '-- Select an option --';
+  dropdown.appendChild(placeholderOption);
+
+  const groups = {};
+  items.forEach((item) => {
+    const group = item.type || 'Other';
+    if (!groups[group]) {
+      groups[group] = [];
+    }
+    groups[group].push(item.name);
+  });
+
+  for (const [groupName, groupItems] of Object.entries(groups)) {
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = groupName;
+
+    groupItems.forEach((name) => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      optgroup.appendChild(option);
+    });
+
+    dropdown.appendChild(optgroup);
+  }
+}
+
+/**
+ * Populate initial dropdown rows on page load.
+ */
+async function populateInitialRows() {
+  const materialDropdown = document.querySelector('.material-dropdown');
+  const processedDropdown = document.querySelector('.processed-dropdown');
+
+  await loadItemsForDropdown('raw-items.json', materialDropdown);
+  await loadItemsForDropdown('processed-items.json', processedDropdown);
+
+  // Initialize Select2
+  $(document).ready(() => {
+    $('.material-dropdown, .processed-dropdown, .material-rarity-dropdown, .processed-rarity-dropdown').select2();
+  });
+}
+
+/**
+ * Add new Material row.
+ */
 function addMaterialRow() {
   const materialRows = document.getElementById('materialRows');
   const newRow = document.createElement('div');
@@ -143,9 +199,12 @@ function addMaterialRow() {
 
   materialRows.appendChild(newRow);
   $(newRow).find('.material-dropdown, .material-rarity-dropdown').select2();
+  loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
 }
 
-// Add new Processed Item row
+/**
+ * Add new Processed Item row.
+ */
 function addProcessedRow() {
   const processedRows = document.getElementById('processedRows');
   const newRow = document.createElement('div');
@@ -176,10 +235,15 @@ function addProcessedRow() {
 
   processedRows.appendChild(newRow);
   $(newRow).find('.processed-dropdown, .processed-rarity-dropdown').select2();
+  loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
 }
 
-// Reset the form
+/**
+ * Reset the form.
+ */
 function resetForm() {
   document.getElementById('donationForm').reset();
   document.getElementById('imagePreview').innerHTML = '';
 }
+
+document.addEventListener('DOMContentLoaded', populateInitialRows);
