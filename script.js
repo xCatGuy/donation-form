@@ -182,7 +182,7 @@ function addMaterialRow() {
     <div>
       <label for="material-rarity">Rarity:</label>
       <select name="material-rarity[]" class="material-rarity-dropdown">
-        <option value="">--Optional--</option>
+        
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -218,7 +218,7 @@ function addProcessedRow() {
     <div>
       <label for="processed-rarity">Rarity:</label>
       <select name="processed-rarity[]" class="processed-rarity-dropdown">
-        <option value="">--Optional--</option>
+    
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
