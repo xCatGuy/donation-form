@@ -15,7 +15,7 @@
   <script src="script.js" defer></script>
 
   <style>
-    /* Existing styles remain unchanged */
+    /* GLOBAL STYLES */
     body {
       font-family: 'Roboto', sans-serif;
       margin: 0;
@@ -33,6 +33,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      width: 100%;
     }
 
     h1, h2 {
@@ -47,6 +48,7 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+      margin-bottom: 20px;
     }
 
     label {
@@ -76,6 +78,10 @@
       display: flex;
       gap: 15px;
       margin-bottom: 15px;
+    }
+
+    .donation-row > div {
+      flex: 1;
     }
 
     button {
@@ -116,6 +122,14 @@
       background: #1e1e1e;
       padding: 20px;
       border-radius: 10px;
+    }
+
+    .footer-message {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #aaaaaa;
+      font-style: italic;
     }
 
     .image-preview {
@@ -221,10 +235,10 @@
           <button type="button" onclick="resetForm()">Reset Form</button>
           <button type="submit">Submit Donations</button>
         </div>
-        <div class="footer-message">
-          Created by xCatGuy for Kaos and Lace Cartel
-        </div>
       </form>
+      <div class="footer-message">
+        Created by xCatGuy for Kaos and Lace Cartel
+      </div>
     </div>
 
     <div id="success-message" class="success-message">
