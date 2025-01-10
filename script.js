@@ -38,22 +38,25 @@ async function submitDonationForm(event) {
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
+  // Basic info
   const username = formData.get('username');
-  const fileInput = document.getElementById('image');
-  const file = fileInput.files[0];
+  const donatedTo = formData.get('donatedTo'); // New field
 
-  // Capture currency data
+  // Currency
   const gold = formData.get('gold') || 0;
   const silver = formData.get('silver') || 0;
   const copper = formData.get('copper') || 0;
 
+  // Image
+  const fileInput = document.getElementById('image');
+  const file = fileInput.files[0];
   let imgUrl = '';
   if (file) {
     imgUrl = await uploadImage(file);
     if (!imgUrl) return; // Stop submission if image upload fails
   }
 
-  // Gather data from dropdowns (filter out empty values)
+  // Materials and Processed Items
   const materials = formData.getAll('material-item[]').filter(Boolean).join(', ');
   const materialRarities = formData.getAll('material-rarity[]').filter(Boolean).join(', ');
   const materialQuantities = formData.getAll('material-quantity[]').filter(Boolean).join(', ');
@@ -61,19 +64,21 @@ async function submitDonationForm(event) {
   const processedRarities = formData.getAll('processed-rarity[]').filter(Boolean).join(', ');
   const processedQuantities = formData.getAll('processed-quantity[]').filter(Boolean).join(', ');
 
+  // Prepare the body for Sheety
   const body = {
     sheet1: {
       username,
+      donatedTo,           // <--- New field in the request body
       materialItem: materials,
       materialRarity: materialRarities,
       materialQuantity: materialQuantities,
       processedItem: processedItems,
       processedRarity: processedRarities,
       processedQuantity: processedQuantities,
-      gold,     // <--- New Currency Fields
-      silver,   // <--- New Currency Fields
-      copper,   // <--- New Currency Fields
-      imgUrl,   // Include the uploaded image URL
+      gold,
+      silver,
+      copper,
+      imgUrl,
       timestamp: new Date().toISOString(),
     },
   };
