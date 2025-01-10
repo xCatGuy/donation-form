@@ -84,9 +84,9 @@ async function submitDonationForm(event) {
     if (!imgUrl) return; // Stop if the upload fails
   }
 
-  // Sheety body: top-level key must match your sheet tab "Sheet1"
+  // Sheety body: top-level key must match your tab name exactly => "sheet1"
   const body = {
-    Sheet1: {
+    sheet1: {
       username: username,
       materialItem: materials,
       materialRarity: materialRarities,
@@ -103,9 +103,9 @@ async function submitDonationForm(event) {
   };
 
   try {
-    // POST to your Sheety endpoint (replace with your real URL if different)
+    // POST to your Sheety endpoint (note the /sheet1 with a lowercase 's')
     const response = await fetch(
-      'https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/Sheet1',
+      'https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1',
       {
         method: 'POST',
         headers: {
@@ -131,7 +131,7 @@ async function submitDonationForm(event) {
 }
 
 /**
- * Load the items from a local JSON file and populate the <select> with grouped options.
+ * Load items from a local JSON file and populate <select> with grouped options.
  */
 async function loadItemsForDropdown(file, dropdown) {
   try {
@@ -231,13 +231,13 @@ function addMaterialRow() {
 
   materialRows.appendChild(newRow);
 
-  // Populate and initialize the new row's material dropdown
+  // Populate the new row's dropdown from raw-items.json
   const materialDropdown = newRow.querySelector('.material-dropdown');
   loadItemsForDropdown('raw-items.json', materialDropdown).then(() => {
     $(materialDropdown).select2();
   });
 
-  // Initialize rarity dropdown
+  // Initialize the new rarity dropdown
   const rarityDropdown = newRow.querySelector('.material-rarity-dropdown');
   $(rarityDropdown).select2();
 }
@@ -275,13 +275,13 @@ function addProcessedRow() {
 
   processedRows.appendChild(newRow);
 
-  // Populate and initialize the new row's processed dropdown
+  // Populate the new row's dropdown from processed-items.json
   const processedDropdown = newRow.querySelector('.processed-dropdown');
   loadItemsForDropdown('processed-items.json', processedDropdown).then(() => {
     $(processedDropdown).select2();
   });
 
-  // Initialize rarity dropdown
+  // Initialize the new rarity dropdown
   const rarityDropdown = newRow.querySelector('.processed-rarity-dropdown');
   $(rarityDropdown).select2();
 }
@@ -294,7 +294,7 @@ function resetForm() {
   document.getElementById('imagePreview').innerHTML = '';
 }
 
-// Wait until the DOM is ready, then populate the initial rows
+// Populate the initial rows once the DOM and jQuery are ready
 $(document).ready(() => {
   populateInitialRows();
 });
