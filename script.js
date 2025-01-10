@@ -42,6 +42,11 @@ async function submitDonationForm(event) {
   const fileInput = document.getElementById('image');
   const file = fileInput.files[0];
 
+  // Capture the currency fields
+  const gold = formData.get('gold') || 0;
+  const silver = formData.get('silver') || 0;
+  const copper = formData.get('copper') || 0;
+
   let imgUrl = '';
   if (file) {
     imgUrl = await uploadImage(file);
@@ -65,7 +70,13 @@ async function submitDonationForm(event) {
       processedItem: processedItems,
       processedRarity: processedRarities,
       processedQuantity: processedQuantities,
-      imgUrl, // Include the uploaded image URL
+      // New currency fields
+      gold,
+      silver,
+      copper,
+      // Image URL
+      imgUrl,
+      // Timestamp
       timestamp: new Date().toISOString(),
     },
   };
@@ -174,15 +185,14 @@ function addMaterialRow() {
   const newRow = document.createElement('div');
   newRow.classList.add('donation-row');
 
-  newRow.innerHTML = `
-    <div>
+  newRow.innerHTML =
+    `<div>
       <label for="material-item">Raw Material:</label>
       <select name="material-item[]" class="material-dropdown"></select>
     </div>
     <div>
       <label for="material-rarity">Rarity:</label>
       <select name="material-rarity[]" class="material-rarity-dropdown">
-        
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -194,10 +204,11 @@ function addMaterialRow() {
     <div>
       <label for="material-quantity">Quantity:</label>
       <input type="number" name="material-quantity[]" min="1" />
-    </div>
-  `;
+    </div>`;
 
   materialRows.appendChild(newRow);
+
+  // Re-initialize Select2 for the new row
   $(newRow).find('.material-dropdown, .material-rarity-dropdown').select2();
   loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
 }
@@ -210,15 +221,14 @@ function addProcessedRow() {
   const newRow = document.createElement('div');
   newRow.classList.add('donation-row');
 
-  newRow.innerHTML = `
-    <div>
+  newRow.innerHTML =
+    `<div>
       <label for="processed-item">Processed Item:</label>
       <select name="processed-item[]" class="processed-dropdown"></select>
     </div>
     <div>
       <label for="processed-rarity">Rarity:</label>
       <select name="processed-rarity[]" class="processed-rarity-dropdown">
-    
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -230,10 +240,11 @@ function addProcessedRow() {
     <div>
       <label for="processed-quantity">Quantity:</label>
       <input type="number" name="processed-quantity[]" min="1" />
-    </div>
-  `;
+    </div>`;
 
   processedRows.appendChild(newRow);
+
+  // Re-initialize Select2 for the new row
   $(newRow).find('.processed-dropdown, .processed-rarity-dropdown').select2();
   loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
 }
