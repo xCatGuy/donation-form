@@ -1,8 +1,7 @@
-// Replace this with your actual Imgur Client ID if you use image upload
-const IMGUR_CLIENT_ID = '8d85a8d7fae7127';
+const IMGUR_CLIENT_ID = '8d85a8d7fae7127'; // Replace with your Imgur Client ID
 
 /**
- * Upload an image to Imgur (if provided).
+ * Function to upload an image to Imgur.
  */
 async function uploadImage(file) {
   try {
@@ -31,7 +30,7 @@ async function uploadImage(file) {
 }
 
 /**
- * Submit the donation form.
+ * Function to submit the donation form.
  */
 async function submitDonationForm(event) {
   event.preventDefault();
@@ -39,71 +38,39 @@ async function submitDonationForm(event) {
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
-  // Grab form values
-  const username = formData.get('username') || '';
-
-  // Materials
-  const materials = formData
-    .getAll('material-item[]')
-    .filter(Boolean)
-    .join(', ');
-  const materialRarities = formData
-    .getAll('material-rarity[]')
-    .filter(Boolean)
-    .join(', ');
-  const materialQuantities = formData
-    .getAll('material-quantity[]')
-    .filter(Boolean)
-    .join(', ');
-
-  // Processed
-  const processedItems = formData
-    .getAll('processed-item[]')
-    .filter(Boolean)
-    .join(', ');
-  const processedRarities = formData
-    .getAll('processed-rarity[]')
-    .filter(Boolean)
-    .join(', ');
-  const processedQuantities = formData
-    .getAll('processed-quantity[]')
-    .filter(Boolean)
-    .join(', ');
-
-  // Currency
-  const gold = formData.get('gold') || '0';
-  const silver = formData.get('silver') || '0';
-  const copper = formData.get('copper') || '0';
-
-  // Handle image upload if any
-  let imgUrl = '';
+  const username = formData.get('username');
   const fileInput = document.getElementById('image');
   const file = fileInput.files[0];
+
+  let imgUrl = '';
   if (file) {
     imgUrl = await uploadImage(file);
-    if (!imgUrl) return; // Stop if the upload fails
+    if (!imgUrl) return; // Stop submission if image upload fails
   }
 
-  // Sheety body: top-level key must match your tab name exactly => "sheet1"
+  // Gather data from dropdowns (filter out empty values)
+  const materials = formData.getAll('material-item[]').filter(Boolean).join(', ');
+  const materialRarities = formData.getAll('material-rarity[]').filter(Boolean).join(', ');
+  const materialQuantities = formData.getAll('material-quantity[]').filter(Boolean).join(', ');
+  const processedItems = formData.getAll('processed-item[]').filter(Boolean).join(', ');
+  const processedRarities = formData.getAll('processed-rarity[]').filter(Boolean).join(', ');
+  const processedQuantities = formData.getAll('processed-quantity[]').filter(Boolean).join(', ');
+
   const body = {
     sheet1: {
-      username: username,
+      username,
       materialItem: materials,
       materialRarity: materialRarities,
       materialQuantity: materialQuantities,
       processedItem: processedItems,
       processedRarity: processedRarities,
       processedQuantity: processedQuantities,
-      gold: gold,
-      silver: silver,
-      copper: copper,
+      imgUrl, // Include the uploaded image URL
       timestamp: new Date().toISOString(),
-      imgUrl: imgUrl,
     },
   };
 
   try {
-    // POST to your Sheety endpoint (note the /sheet1 with a lowercase 's')
     const response = await fetch(
       'https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1',
       {
@@ -116,8 +83,8 @@ async function submitDonationForm(event) {
     );
 
     if (response.ok) {
-      form.reset();
-      document.getElementById('imagePreview').innerHTML = '';
+      document.getElementById('donationForm').reset();
+      document.getElementById('imagePreview').innerHTML = ''; // Clear image preview
       document.getElementById('success-message').style.display = 'block';
       document.getElementById('form-container').style.display = 'none';
     } else {
@@ -131,7 +98,7 @@ async function submitDonationForm(event) {
 }
 
 /**
- * Load items from a local JSON file and populate <select> with grouped options.
+ * Function to load items into dropdowns.
  */
 async function loadItemsForDropdown(file, dropdown) {
   try {
@@ -140,66 +107,67 @@ async function loadItemsForDropdown(file, dropdown) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const items = await response.json();
-
-    // Clear existing options
-    dropdown.innerHTML = '';
-
-    // Placeholder
-    const placeholderOption = document.createElement('option');
-    placeholderOption.value = '';
-    placeholderOption.textContent = '-- Select an option --';
-    dropdown.appendChild(placeholderOption);
-
-    // Group items by 'type'
-    const groups = {};
-    items.forEach((item) => {
-      const group = item.type || 'Other';
-      if (!groups[group]) {
-        groups[group] = [];
-      }
-      groups[group].push(item.name);
-    });
-
-    // Populate grouped options
-    for (const [groupName, groupItems] of Object.entries(groups)) {
-      const optgroup = document.createElement('optgroup');
-      optgroup.label = groupName;
-      groupItems.forEach((name) => {
-        const option = document.createElement('option');
-        option.value = name;
-        option.textContent = name;
-        optgroup.appendChild(option);
-      });
-      dropdown.appendChild(optgroup);
-    }
+    console.log(`Loaded items for ${dropdown.name}:`, items);
+    populateDropdownWithGroups(dropdown, items);
   } catch (error) {
     console.error(`Error loading ${file}:`, error);
   }
 }
 
 /**
- * Initialize the default rows (material & processed) on page load.
- * Then activate Select2 on them.
+ * Populates dropdowns with grouped items.
  */
-async function populateInitialRows() {
-  // The default Material and Processed dropdowns:
-  const materialDropdown = document.querySelector('.material-dropdown');
-  const processedDropdown = document.querySelector('.processed-dropdown');
+function populateDropdownWithGroups(dropdown, items) {
+  dropdown.innerHTML = ''; // Clear existing options
 
-  // Load items from local JSON for each
-  await loadItemsForDropdown('raw-items.json', materialDropdown);
-  await loadItemsForDropdown('processed-items.json', processedDropdown);
+  // Placeholder for no selection
+  const placeholderOption = document.createElement('option');
+  placeholderOption.value = '';
+  placeholderOption.textContent = '-- Select an option --';
+  dropdown.appendChild(placeholderOption);
 
-  // Now initialize them with Select2
-  $(materialDropdown).select2();
-  $(processedDropdown).select2();
+  const groups = {};
+  items.forEach((item) => {
+    const group = item.type || 'Other';
+    if (!groups[group]) {
+      groups[group] = [];
+    }
+    groups[group].push(item.name);
+  });
 
-  // Also initialize the rarity dropdowns in the default row
-  $('.material-rarity-dropdown, .processed-rarity-dropdown').select2();
+  for (const [groupName, groupItems] of Object.entries(groups)) {
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = groupName;
+
+    groupItems.forEach((name) => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      optgroup.appendChild(option);
+    });
+
+    dropdown.appendChild(optgroup);
+  }
 }
 
 /**
- * Add a new Material row (with new dropdowns).
+ * Populate initial dropdown rows on page load.
+ */
+async function populateInitialRows() {
+  const materialDropdown = document.querySelector('.material-dropdown');
+  const processedDropdown = document.querySelector('.processed-dropdown');
+
+  await loadItemsForDropdown('raw-items.json', materialDropdown);
+  await loadItemsForDropdown('processed-items.json', processedDropdown);
+
+  // Initialize Select2
+  $(document).ready(() => {
+    $('.material-dropdown, .processed-dropdown, .material-rarity-dropdown, .processed-rarity-dropdown').select2();
+  });
+}
+
+/**
+ * Add new Material row.
  */
 function addMaterialRow() {
   const materialRows = document.getElementById('materialRows');
@@ -214,7 +182,7 @@ function addMaterialRow() {
     <div>
       <label for="material-rarity">Rarity:</label>
       <select name="material-rarity[]" class="material-rarity-dropdown">
-        <option value="">-- Select an option --</option>
+        
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -230,20 +198,12 @@ function addMaterialRow() {
   `;
 
   materialRows.appendChild(newRow);
-
-  // Populate the new row's dropdown from raw-items.json
-  const materialDropdown = newRow.querySelector('.material-dropdown');
-  loadItemsForDropdown('raw-items.json', materialDropdown).then(() => {
-    $(materialDropdown).select2();
-  });
-
-  // Initialize the new rarity dropdown
-  const rarityDropdown = newRow.querySelector('.material-rarity-dropdown');
-  $(rarityDropdown).select2();
+  $(newRow).find('.material-dropdown, .material-rarity-dropdown').select2();
+  loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
 }
 
 /**
- * Add a new Processed row (with new dropdowns).
+ * Add new Processed Item row.
  */
 function addProcessedRow() {
   const processedRows = document.getElementById('processedRows');
@@ -258,7 +218,7 @@ function addProcessedRow() {
     <div>
       <label for="processed-rarity">Rarity:</label>
       <select name="processed-rarity[]" class="processed-rarity-dropdown">
-        <option value="">-- Select an option --</option>
+    
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -274,27 +234,16 @@ function addProcessedRow() {
   `;
 
   processedRows.appendChild(newRow);
-
-  // Populate the new row's dropdown from processed-items.json
-  const processedDropdown = newRow.querySelector('.processed-dropdown');
-  loadItemsForDropdown('processed-items.json', processedDropdown).then(() => {
-    $(processedDropdown).select2();
-  });
-
-  // Initialize the new rarity dropdown
-  const rarityDropdown = newRow.querySelector('.processed-rarity-dropdown');
-  $(rarityDropdown).select2();
+  $(newRow).find('.processed-dropdown, .processed-rarity-dropdown').select2();
+  loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
 }
 
 /**
- * Reset the form completely.
+ * Reset the form.
  */
 function resetForm() {
   document.getElementById('donationForm').reset();
   document.getElementById('imagePreview').innerHTML = '';
 }
 
-// Populate the initial rows once the DOM and jQuery are ready
-$(document).ready(() => {
-  populateInitialRows();
-});
+document.addEventListener('DOMContentLoaded', populateInitialRows);
