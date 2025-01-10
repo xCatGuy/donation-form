@@ -1,5 +1,5 @@
-// Replace with your actual Imgur Client ID
-const IMGUR_CLIENT_ID = '8d85a8d7fae7127'; 
+// Replace this with your actual Imgur Client ID (if needed)
+const IMGUR_CLIENT_ID = '8d85a8d7fae7127';
 
 /**
  * Function to upload an image to Imgur.
@@ -12,7 +12,6 @@ async function uploadImage(file) {
     const response = await fetch('https://api.imgur.com/3/image', {
       method: 'POST',
       headers: {
-        // Correct use of backticks for template literal
         Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
       },
       body: formData,
@@ -40,10 +39,10 @@ async function submitDonationForm(event) {
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
-  // Gather basic fields
-  const username = formData.get('username');
-  
-  // Gather all Materials
+  // Basic fields
+  const username = formData.get('username') || '';
+
+  // Materials
   const materials = formData
     .getAll('material-item[]')
     .filter(Boolean)
@@ -57,7 +56,7 @@ async function submitDonationForm(event) {
     .filter(Boolean)
     .join(', ');
 
-  // Gather all Processed Items
+  // Processed Items
   const processedItems = formData
     .getAll('processed-item[]')
     .filter(Boolean)
@@ -71,23 +70,24 @@ async function submitDonationForm(event) {
     .filter(Boolean)
     .join(', ');
 
-  // Gather Currency
+  // Currency
   const gold = formData.get('gold') || 0;
   const silver = formData.get('silver') || 0;
   const copper = formData.get('copper') || 0;
 
-  // Upload image (if any)
+  // Upload image if provided
   let imgUrl = '';
   const fileInput = document.getElementById('image');
   const file = fileInput.files[0];
   if (file) {
     imgUrl = await uploadImage(file);
-    if (!imgUrl) return; // Stop if image upload fails
+    if (!imgUrl) return; // Stop submission if image upload fails
   }
 
-  // Build the body object to match the Sheety columns exactly
+  // Build the JSON body.
+  // Important: The top-level key must match the tab name exactly: "Sheet1"
   const body = {
-    sheet1: {
+    Sheet1: {
       username: username,
       materialItem: materials,
       materialRarity: materialRarities,
@@ -104,9 +104,9 @@ async function submitDonationForm(event) {
   };
 
   try {
-    // Make sure this endpoint is correct for your Sheety project
+    // Ensure the endpoint ends in /Sheet1 (capital S) to match your tab name
     const response = await fetch(
-      'https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1',
+      'https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/Sheet1',
       {
         method: 'POST',
         headers: {
@@ -118,7 +118,7 @@ async function submitDonationForm(event) {
 
     if (response.ok) {
       // Reset the form
-      document.getElementById('donationForm').reset();
+      form.reset();
       document.getElementById('imagePreview').innerHTML = '';
       document.getElementById('success-message').style.display = 'block';
       document.getElementById('form-container').style.display = 'none';
@@ -133,7 +133,7 @@ async function submitDonationForm(event) {
 }
 
 /**
- * Function to load items into dropdowns.
+ * Load items into dropdowns from local JSON files.
  */
 async function loadItemsForDropdown(file, dropdown) {
   try {
@@ -150,12 +150,12 @@ async function loadItemsForDropdown(file, dropdown) {
 }
 
 /**
- * Populates dropdowns with grouped items.
+ * Populate a dropdown with grouped items.
  */
 function populateDropdownWithGroups(dropdown, items) {
   dropdown.innerHTML = ''; // Clear existing options
 
-  // Placeholder for no selection
+  // Placeholder
   const placeholderOption = document.createElement('option');
   placeholderOption.value = '';
   placeholderOption.textContent = '-- Select an option --';
@@ -186,23 +186,24 @@ function populateDropdownWithGroups(dropdown, items) {
 }
 
 /**
- * Populate initial dropdown rows on page load.
+ * Populate the initial dropdown rows on page load.
  */
 async function populateInitialRows() {
   const materialDropdown = document.querySelector('.material-dropdown');
   const processedDropdown = document.querySelector('.processed-dropdown');
 
+  // Load your local JSON files for raw and processed items:
   await loadItemsForDropdown('raw-items.json', materialDropdown);
   await loadItemsForDropdown('processed-items.json', processedDropdown);
 
-  // Initialize Select2 after content is loaded
+  // Initialize Select2
   $(document).ready(() => {
     $('.material-dropdown, .processed-dropdown, .material-rarity-dropdown, .processed-rarity-dropdown').select2();
   });
 }
 
 /**
- * Add new Material row.
+ * Add a new Material row dynamically.
  */
 function addMaterialRow() {
   const materialRows = document.getElementById('materialRows');
@@ -240,7 +241,7 @@ function addMaterialRow() {
 }
 
 /**
- * Add new Processed Item row.
+ * Add a new Processed Item row dynamically.
  */
 function addProcessedRow() {
   const processedRows = document.getElementById('processedRows');
@@ -285,4 +286,5 @@ function resetForm() {
   document.getElementById('imagePreview').innerHTML = '';
 }
 
+// Populate the dropdowns when the page loads
 document.addEventListener('DOMContentLoaded', populateInitialRows);
