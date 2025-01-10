@@ -42,6 +42,11 @@ async function submitDonationForm(event) {
   const fileInput = document.getElementById('image');
   const file = fileInput.files[0];
 
+  // Capture currency data
+  const gold = formData.get('gold') || 0;
+  const silver = formData.get('silver') || 0;
+  const copper = formData.get('copper') || 0;
+
   let imgUrl = '';
   if (file) {
     imgUrl = await uploadImage(file);
@@ -65,7 +70,10 @@ async function submitDonationForm(event) {
       processedItem: processedItems,
       processedRarity: processedRarities,
       processedQuantity: processedQuantities,
-      imgUrl, // Include the uploaded image URL
+      gold,     // <--- New Currency Fields
+      silver,   // <--- New Currency Fields
+      copper,   // <--- New Currency Fields
+      imgUrl,   // Include the uploaded image URL
       timestamp: new Date().toISOString(),
     },
   };
@@ -182,7 +190,7 @@ function addMaterialRow() {
     <div>
       <label for="material-rarity">Rarity:</label>
       <select name="material-rarity[]" class="material-rarity-dropdown">
-        
+        <option value="">-- Select an option --</option>
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -198,6 +206,8 @@ function addMaterialRow() {
   `;
 
   materialRows.appendChild(newRow);
+
+  // Re-initialize Select2 and load items for the new row
   $(newRow).find('.material-dropdown, .material-rarity-dropdown').select2();
   loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
 }
@@ -218,7 +228,7 @@ function addProcessedRow() {
     <div>
       <label for="processed-rarity">Rarity:</label>
       <select name="processed-rarity[]" class="processed-rarity-dropdown">
-    
+        <option value="">-- Select an option --</option>
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -234,6 +244,8 @@ function addProcessedRow() {
   `;
 
   processedRows.appendChild(newRow);
+
+  // Re-initialize Select2 and load items for the new row
   $(newRow).find('.processed-dropdown, .processed-rarity-dropdown').select2();
   loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
 }
