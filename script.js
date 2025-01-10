@@ -40,7 +40,7 @@ async function submitDonationForm(event) {
 
   // Basic info
   const username = formData.get('username');
-  const donatedTo = formData.get('donatedTo'); // New field
+  const donatedTo = formData.get('donatedTo'); // Must match the "name" attribute in HTML
 
   // Currency
   const gold = formData.get('gold') || 0;
@@ -64,21 +64,21 @@ async function submitDonationForm(event) {
   const processedRarities = formData.getAll('processed-rarity[]').filter(Boolean).join(', ');
   const processedQuantities = formData.getAll('processed-quantity[]').filter(Boolean).join(', ');
 
-  // Prepare the body for Sheety
+  // Build the request body for Sheety
   const body = {
     sheet1: {
-      username,
-      donatedTo,           // <--- New field in the request body
+      username: username,
+      donatedTo: donatedTo, // <-- Explicitly match the column "donatedTo"
       materialItem: materials,
       materialRarity: materialRarities,
       materialQuantity: materialQuantities,
       processedItem: processedItems,
       processedRarity: processedRarities,
       processedQuantity: processedQuantities,
-      gold,
-      silver,
-      copper,
-      imgUrl,
+      gold: gold,
+      silver: silver,
+      copper: copper,
+      imgUrl: imgUrl,
       timestamp: new Date().toISOString(),
     },
   };
@@ -96,8 +96,9 @@ async function submitDonationForm(event) {
     );
 
     if (response.ok) {
+      // Reset the form and show success
       document.getElementById('donationForm').reset();
-      document.getElementById('imagePreview').innerHTML = ''; // Clear image preview
+      document.getElementById('imagePreview').innerHTML = '';
       document.getElementById('success-message').style.display = 'block';
       document.getElementById('form-container').style.display = 'none';
     } else {
