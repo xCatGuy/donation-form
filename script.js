@@ -1,290 +1,300 @@
-// Replace this with your actual Imgur Client ID (if needed)
-const IMGUR_CLIENT_ID = '8d85a8d7fae7127';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Donation Form</title>
 
-/**
- * Function to upload an image to Imgur.
- */
-async function uploadImage(file) {
-  try {
-    const formData = new FormData();
-    formData.append('image', file);
+  <!-- Include jQuery before Select2 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link
+    href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="script.js" defer></script>
 
-    const response = await fetch('https://api.imgur.com/3/image', {
-      method: 'POST',
-      headers: {
-        Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
-      },
-      body: formData,
-    });
-
-    const result = await response.json();
-    if (result.success) {
-      return result.data.link; // Return the Imgur URL
-    } else {
-      throw new Error('Image upload failed');
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1c1c1c, #121212);
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    alert('Failed to upload image. Please try again.');
-    return null;
-  }
-}
 
-/**
- * Function to submit the donation form.
- */
-async function submitDonationForm(event) {
-  event.preventDefault();
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
 
-  const form = document.getElementById('donationForm');
-  const formData = new FormData(form);
+    h1, h2 {
+      text-align: center;
+      margin: 20px;
+    }
 
-  // Basic fields
-  const username = formData.get('username') || '';
+    form {
+      max-width: 900px;
+      width: 100%;
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+      margin-bottom: 20px;
+    }
 
-  // Materials
-  const materials = formData
-    .getAll('material-item[]')
-    .filter(Boolean)
-    .join(', ');
-  const materialRarities = formData
-    .getAll('material-rarity[]')
-    .filter(Boolean)
-    .join(', ');
-  const materialQuantities = formData
-    .getAll('material-quantity[]')
-    .filter(Boolean)
-    .join(', ');
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
 
-  // Processed Items
-  const processedItems = formData
-    .getAll('processed-item[]')
-    .filter(Boolean)
-    .join(', ');
-  const processedRarities = formData
-    .getAll('processed-rarity[]')
-    .filter(Boolean)
-    .join(', ');
-  const processedQuantities = formData
-    .getAll('processed-quantity[]')
-    .filter(Boolean)
-    .join(', ');
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    select {
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #2c2c2c;
+      border: 1px solid #444;
+      color: #fff;
+      font-size: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+    }
 
-  // Currency
-  const gold = formData.get('gold') || 0;
-  const silver = formData.get('silver') || 0;
-  const copper = formData.get('copper') || 0;
+    input:focus,
+    select:focus {
+      border-color: #777;
+      outline: none;
+    }
 
-  // Upload image if provided
-  let imgUrl = '';
-  const fileInput = document.getElementById('image');
-  const file = fileInput.files[0];
-  if (file) {
-    imgUrl = await uploadImage(file);
-    if (!imgUrl) return; // Stop submission if image upload fails
-  }
+    .donation-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
 
-  // Build the JSON body.
-  // Important: The top-level key must match the tab name exactly: "Sheet1"
-  const body = {
-    Sheet1: {
-      username: username,
-      materialItem: materials,
-      materialRarity: materialRarities,
-      materialQuantity: materialQuantities,
-      processedItem: processedItems,
-      processedRarity: processedRarities,
-      processedQuantity: processedQuantities,
-      gold: gold,
-      silver: silver,
-      copper: copper,
-      timestamp: new Date().toISOString(),
-      imgUrl: imgUrl,
-    },
-  };
+    .donation-row > div {
+      flex: 1;
+    }
 
-  try {
-    // Ensure the endpoint ends in /Sheet1 (capital S) to match your tab name
-    const response = await fetch(
-      'https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/Sheet1',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      min-width: 150px;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button[type="button"] {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    button[type="submit"] {
+      background-color: #4caf50;
+      color: #fff;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .success-message {
+      display: none;
+      text-align: center;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .footer-message {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #aaaaaa;
+      font-style: italic;
+    }
+
+    .image-preview {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .image-preview img {
+      max-width: 100px;
+      max-height: 100px;
+      border: 2px solid #444;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+      form {
+        padding: 20px;
       }
-    );
 
-    if (response.ok) {
-      // Reset the form
-      form.reset();
-      document.getElementById('imagePreview').innerHTML = '';
-      document.getElementById('success-message').style.display = 'block';
-      document.getElementById('form-container').style.display = 'none';
-    } else {
-      const errorText = await response.text();
-      alert(`Failed to submit donation: ${errorText}`);
+      .donation-row {
+        flex-direction: column;
+      }
+
+      .button-container {
+        flex-direction: column;
+      }
     }
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    alert('An error occurred. Please try again.');
-  }
-}
 
-/**
- * Load items into dropdowns from local JSON files.
- */
-async function loadItemsForDropdown(file, dropdown) {
-  try {
-    const response = await fetch(file);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    /* Select2 Dark Mode */
+    .select2-container .select2-selection--single {
+      background-color: #2c2c2c !important;
+      border: 1px solid #444 !important;
+      color: #fff !important;
+      border-radius: 5px;
+      height: 42px !important;
     }
-    const items = await response.json();
-    console.log(`Loaded items for ${dropdown.name}:`, items);
-    populateDropdownWithGroups(dropdown, items);
-  } catch (error) {
-    console.error(`Error loading ${file}:`, error);
-  }
-}
-
-/**
- * Populate a dropdown with grouped items.
- */
-function populateDropdownWithGroups(dropdown, items) {
-  dropdown.innerHTML = ''; // Clear existing options
-
-  // Placeholder
-  const placeholderOption = document.createElement('option');
-  placeholderOption.value = '';
-  placeholderOption.textContent = '-- Select an option --';
-  dropdown.appendChild(placeholderOption);
-
-  const groups = {};
-  items.forEach((item) => {
-    const group = item.type || 'Other';
-    if (!groups[group]) {
-      groups[group] = [];
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: #fff transparent transparent transparent !important;
     }
-    groups[group].push(item.name);
-  });
+    .select2-container--open .select2-selection--single .select2-selection__arrow b {
+      border-color: transparent transparent #fff transparent !important;
+    }
+    .select2-selection__rendered {
+      color: #fff !important;
+      line-height: 40px !important;
+    }
+    .select2-container .select2-dropdown {
+      background-color: #2c2c2c !important;
+      border: 1px solid #444 !important;
+      color: #fff !important;
+    }
+    .select2-results__option {
+      padding: 10px !important;
+    }
+    .select2-results__option--highlighted {
+      background-color: #444 !important;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="form-container">
+      <h1>Donation Form</h1>
+      <form id="donationForm" onsubmit="submitDonationForm(event)">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required />
 
-  for (const [groupName, groupItems] of Object.entries(groups)) {
-    const optgroup = document.createElement('optgroup');
-    optgroup.label = groupName;
+        <h2>Materials</h2>
+        <div id="materialRows">
+          <div class="donation-row">
+            <div>
+              <label for="material-item">Raw Material:</label>
+              <select name="material-item[]" class="material-dropdown"></select>
+            </div>
+            <div>
+              <label for="material-rarity">Rarity:</label>
+              <select name="material-rarity[]" class="material-rarity-dropdown">
+                <option value="">-- Select an option --</option>
+                <option value="Common">Common</option>
+                <option value="Uncommon">Uncommon</option>
+                <option value="Rare">Rare</option>
+                <option value="Heroic">Heroic</option>
+                <option value="Epic">Epic</option>
+                <option value="Legendary">Legendary</option>
+              </select>
+            </div>
+            <div>
+              <label for="material-quantity">Quantity:</label>
+              <input type="number" name="material-quantity[]" min="1" />
+            </div>
+          </div>
+        </div>
+        <button type="button" onclick="addMaterialRow()">Add Material</button>
 
-    groupItems.forEach((name) => {
-      const option = document.createElement('option');
-      option.value = name;
-      option.textContent = name;
-      optgroup.appendChild(option);
-    });
+        <h2>Processed Items</h2>
+        <div id="processedRows">
+          <div class="donation-row">
+            <div>
+              <label for="processed-item">Processed Item:</label>
+              <select name="processed-item[]" class="processed-dropdown"></select>
+            </div>
+            <div>
+              <label for="processed-rarity">Rarity:</label>
+              <select name="processed-rarity[]" class="processed-rarity-dropdown">
+                <option value="">-- Select an option --</option>
+                <option value="Common">Common</option>
+                <option value="Uncommon">Uncommon</option>
+                <option value="Rare">Rare</option>
+                <option value="Heroic">Heroic</option>
+                <option value="Epic">Epic</option>
+                <option value="Legendary">Legendary</option>
+              </select>
+            </div>
+            <div>
+              <label for="processed-quantity">Quantity:</label>
+              <input type="number" name="processed-quantity[]" min="1" />
+            </div>
+          </div>
+        </div>
+        <button type="button" onclick="addProcessedRow()">Add Processed Item</button>
 
-    dropdown.appendChild(optgroup);
-  }
-}
+        <h2>Currency Donations</h2>
+        <div class="donation-row">
+          <div>
+            <label for="gold">Gold:</label>
+            <input type="number" name="gold" id="gold" min="0" value="0" />
+          </div>
+          <div>
+            <label for="silver">Silver:</label>
+            <input type="number" name="silver" id="silver" min="0" value="0" />
+          </div>
+          <div>
+            <label for="copper">Copper:</label>
+            <input type="number" name="copper" id="copper" min="0" value="0" />
+          </div>
+        </div>
 
-/**
- * Populate the initial dropdown rows on page load.
- */
-async function populateInitialRows() {
-  const materialDropdown = document.querySelector('.material-dropdown');
-  const processedDropdown = document.querySelector('.processed-dropdown');
+        <h2>Image Upload</h2>
+        <div class="donation-row">
+          <div>
+            <label for="image">Upload an Image:</label>
+            <input type="file" id="image" name="image" accept="image/*" />
+          </div>
+        </div>
+        <div class="image-preview" id="imagePreview"></div>
 
-  // Load your local JSON files for raw and processed items:
-  await loadItemsForDropdown('raw-items.json', materialDropdown);
-  await loadItemsForDropdown('processed-items.json', processedDropdown);
+        <div class="separator"></div>
+        <div class="button-container">
+          <button type="button" onclick="resetForm()">Reset Form</button>
+          <button type="submit">Submit Donations</button>
+        </div>
+      </form>
 
-  // Initialize Select2
-  $(document).ready(() => {
-    $('.material-dropdown, .processed-dropdown, .material-rarity-dropdown, .processed-rarity-dropdown').select2();
-  });
-}
-
-/**
- * Add a new Material row dynamically.
- */
-function addMaterialRow() {
-  const materialRows = document.getElementById('materialRows');
-  const newRow = document.createElement('div');
-  newRow.classList.add('donation-row');
-
-  newRow.innerHTML = `
-    <div>
-      <label for="material-item">Raw Material:</label>
-      <select name="material-item[]" class="material-dropdown"></select>
+      <div class="footer-message">
+        Created by xCatGuy for Kaos and Lace Cartel
+      </div>
     </div>
-    <div>
-      <label for="material-rarity">Rarity:</label>
-      <select name="material-rarity[]" class="material-rarity-dropdown">
-        <option value="">-- Select an option --</option>
-        <option value="Common">Common</option>
-        <option value="Uncommon">Uncommon</option>
-        <option value="Rare">Rare</option>
-        <option value="Heroic">Heroic</option>
-        <option value="Epic">Epic</option>
-        <option value="Legendary">Legendary</option>
-      </select>
+
+    <div id="success-message" class="success-message">
+      <h1>Thank You!</h1>
+      <p>Your donation has been successfully submitted.</p>
     </div>
-    <div>
-      <label for="material-quantity">Quantity:</label>
-      <input type="number" name="material-quantity[]" min="1" />
-    </div>
-  `;
-
-  materialRows.appendChild(newRow);
-
-  // Re-initialize Select2 for the new row
-  $(newRow).find('.material-dropdown, .material-rarity-dropdown').select2();
-  loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
-}
-
-/**
- * Add a new Processed Item row dynamically.
- */
-function addProcessedRow() {
-  const processedRows = document.getElementById('processedRows');
-  const newRow = document.createElement('div');
-  newRow.classList.add('donation-row');
-
-  newRow.innerHTML = `
-    <div>
-      <label for="processed-item">Processed Item:</label>
-      <select name="processed-item[]" class="processed-dropdown"></select>
-    </div>
-    <div>
-      <label for="processed-rarity">Rarity:</label>
-      <select name="processed-rarity[]" class="processed-rarity-dropdown">
-        <option value="">-- Select an option --</option>
-        <option value="Common">Common</option>
-        <option value="Uncommon">Uncommon</option>
-        <option value="Rare">Rare</option>
-        <option value="Heroic">Heroic</option>
-        <option value="Epic">Epic</option>
-        <option value="Legendary">Legendary</option>
-      </select>
-    </div>
-    <div>
-      <label for="processed-quantity">Quantity:</label>
-      <input type="number" name="processed-quantity[]" min="1" />
-    </div>
-  `;
-
-  processedRows.appendChild(newRow);
-
-  // Re-initialize Select2 for the new row
-  $(newRow).find('.processed-dropdown, .processed-rarity-dropdown').select2();
-  loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
-}
-
-/**
- * Reset the form.
- */
-function resetForm() {
-  document.getElementById('donationForm').reset();
-  document.getElementById('imagePreview').innerHTML = '';
-}
-
-// Populate the dropdowns when the page loads
-document.addEventListener('DOMContentLoaded', populateInitialRows);
+  </main>
+</body>
+</html>
