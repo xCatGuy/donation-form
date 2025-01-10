@@ -1,8 +1,8 @@
-// Replace this with your actual Imgur Client ID (if needed)
+// Replace this with your actual Imgur Client ID if you use image upload
 const IMGUR_CLIENT_ID = '8d85a8d7fae7127';
 
 /**
- * Function to upload an image to Imgur.
+ * Upload an image to Imgur (if provided).
  */
 async function uploadImage(file) {
   try {
@@ -31,7 +31,7 @@ async function uploadImage(file) {
 }
 
 /**
- * Function to submit the donation form.
+ * Submit the donation form.
  */
 async function submitDonationForm(event) {
   event.preventDefault();
@@ -39,7 +39,7 @@ async function submitDonationForm(event) {
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
-  // Basic fields
+  // Grab form values
   const username = formData.get('username') || '';
 
   // Materials
@@ -56,7 +56,7 @@ async function submitDonationForm(event) {
     .filter(Boolean)
     .join(', ');
 
-  // Processed Items
+  // Processed
   const processedItems = formData
     .getAll('processed-item[]')
     .filter(Boolean)
@@ -71,21 +71,20 @@ async function submitDonationForm(event) {
     .join(', ');
 
   // Currency
-  const gold = formData.get('gold') || 0;
-  const silver = formData.get('silver') || 0;
-  const copper = formData.get('copper') || 0;
+  const gold = formData.get('gold') || '0';
+  const silver = formData.get('silver') || '0';
+  const copper = formData.get('copper') || '0';
 
-  // Upload image if provided
+  // Handle image upload if any
   let imgUrl = '';
   const fileInput = document.getElementById('image');
   const file = fileInput.files[0];
   if (file) {
     imgUrl = await uploadImage(file);
-    if (!imgUrl) return; // Stop submission if image upload fails
+    if (!imgUrl) return; // Stop if the upload fails
   }
 
-  // Build the JSON body.
-  // Important: The top-level key must match the tab name exactly: "Sheet1"
+  // Sheety body: top-level key must match your sheet tab "Sheet1"
   const body = {
     Sheet1: {
       username: username,
@@ -104,7 +103,7 @@ async function submitDonationForm(event) {
   };
 
   try {
-    // Ensure the endpoint ends in /Sheet1 (capital S) to match your tab name
+    // POST to your Sheety endpoint (replace with your real URL if different)
     const response = await fetch(
       'https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/Sheet1',
       {
@@ -117,7 +116,6 @@ async function submitDonationForm(event) {
     );
 
     if (response.ok) {
-      // Reset the form
       form.reset();
       document.getElementById('imagePreview').innerHTML = '';
       document.getElementById('success-message').style.display = 'block';
@@ -133,7 +131,7 @@ async function submitDonationForm(event) {
 }
 
 /**
- * Load items into dropdowns from local JSON files.
+ * Load the items from a local JSON file and populate the <select> with grouped options.
  */
 async function loadItemsForDropdown(file, dropdown) {
   try {
@@ -142,68 +140,66 @@ async function loadItemsForDropdown(file, dropdown) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const items = await response.json();
-    console.log(`Loaded items for ${dropdown.name}:`, items);
-    populateDropdownWithGroups(dropdown, items);
+
+    // Clear existing options
+    dropdown.innerHTML = '';
+
+    // Placeholder
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = '-- Select an option --';
+    dropdown.appendChild(placeholderOption);
+
+    // Group items by 'type'
+    const groups = {};
+    items.forEach((item) => {
+      const group = item.type || 'Other';
+      if (!groups[group]) {
+        groups[group] = [];
+      }
+      groups[group].push(item.name);
+    });
+
+    // Populate grouped options
+    for (const [groupName, groupItems] of Object.entries(groups)) {
+      const optgroup = document.createElement('optgroup');
+      optgroup.label = groupName;
+      groupItems.forEach((name) => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        optgroup.appendChild(option);
+      });
+      dropdown.appendChild(optgroup);
+    }
   } catch (error) {
     console.error(`Error loading ${file}:`, error);
   }
 }
 
 /**
- * Populate a dropdown with grouped items.
- */
-function populateDropdownWithGroups(dropdown, items) {
-  dropdown.innerHTML = ''; // Clear existing options
-
-  // Placeholder
-  const placeholderOption = document.createElement('option');
-  placeholderOption.value = '';
-  placeholderOption.textContent = '-- Select an option --';
-  dropdown.appendChild(placeholderOption);
-
-  const groups = {};
-  items.forEach((item) => {
-    const group = item.type || 'Other';
-    if (!groups[group]) {
-      groups[group] = [];
-    }
-    groups[group].push(item.name);
-  });
-
-  for (const [groupName, groupItems] of Object.entries(groups)) {
-    const optgroup = document.createElement('optgroup');
-    optgroup.label = groupName;
-
-    groupItems.forEach((name) => {
-      const option = document.createElement('option');
-      option.value = name;
-      option.textContent = name;
-      optgroup.appendChild(option);
-    });
-
-    dropdown.appendChild(optgroup);
-  }
-}
-
-/**
- * Populate the initial dropdown rows on page load.
+ * Initialize the default rows (material & processed) on page load.
+ * Then activate Select2 on them.
  */
 async function populateInitialRows() {
+  // The default Material and Processed dropdowns:
   const materialDropdown = document.querySelector('.material-dropdown');
   const processedDropdown = document.querySelector('.processed-dropdown');
 
-  // Load your local JSON files for raw and processed items:
+  // Load items from local JSON for each
   await loadItemsForDropdown('raw-items.json', materialDropdown);
   await loadItemsForDropdown('processed-items.json', processedDropdown);
 
-  // Initialize Select2
-  $(document).ready(() => {
-    $('.material-dropdown, .processed-dropdown, .material-rarity-dropdown, .processed-rarity-dropdown').select2();
-  });
+  // Now initialize them with Select2
+  $(materialDropdown).select2();
+  $(processedDropdown).select2();
+
+  // Also initialize the rarity dropdowns in the default row
+  $('.material-rarity-dropdown, .processed-rarity-dropdown').select2();
 }
 
 /**
- * Add a new Material row dynamically.
+ * Add a new Material row (with new dropdowns).
  */
 function addMaterialRow() {
   const materialRows = document.getElementById('materialRows');
@@ -235,13 +231,19 @@ function addMaterialRow() {
 
   materialRows.appendChild(newRow);
 
-  // Re-initialize Select2 for the new row
-  $(newRow).find('.material-dropdown, .material-rarity-dropdown').select2();
-  loadItemsForDropdown('raw-items.json', newRow.querySelector('.material-dropdown'));
+  // Populate and initialize the new row's material dropdown
+  const materialDropdown = newRow.querySelector('.material-dropdown');
+  loadItemsForDropdown('raw-items.json', materialDropdown).then(() => {
+    $(materialDropdown).select2();
+  });
+
+  // Initialize rarity dropdown
+  const rarityDropdown = newRow.querySelector('.material-rarity-dropdown');
+  $(rarityDropdown).select2();
 }
 
 /**
- * Add a new Processed Item row dynamically.
+ * Add a new Processed row (with new dropdowns).
  */
 function addProcessedRow() {
   const processedRows = document.getElementById('processedRows');
@@ -273,18 +275,26 @@ function addProcessedRow() {
 
   processedRows.appendChild(newRow);
 
-  // Re-initialize Select2 for the new row
-  $(newRow).find('.processed-dropdown, .processed-rarity-dropdown').select2();
-  loadItemsForDropdown('processed-items.json', newRow.querySelector('.processed-dropdown'));
+  // Populate and initialize the new row's processed dropdown
+  const processedDropdown = newRow.querySelector('.processed-dropdown');
+  loadItemsForDropdown('processed-items.json', processedDropdown).then(() => {
+    $(processedDropdown).select2();
+  });
+
+  // Initialize rarity dropdown
+  const rarityDropdown = newRow.querySelector('.processed-rarity-dropdown');
+  $(rarityDropdown).select2();
 }
 
 /**
- * Reset the form.
+ * Reset the form completely.
  */
 function resetForm() {
   document.getElementById('donationForm').reset();
   document.getElementById('imagePreview').innerHTML = '';
 }
 
-// Populate the dropdowns when the page loads
-document.addEventListener('DOMContentLoaded', populateInitialRows);
+// Wait until the DOM is ready, then populate the initial rows
+$(document).ready(() => {
+  populateInitialRows();
+});
