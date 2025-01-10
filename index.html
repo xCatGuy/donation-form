@@ -5,13 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Donation Form</title>
 
-  <!-- Include jQuery before Select2 -->
+  <!-- Include jQuery and Select2 (make sure these are loaded BEFORE script.js) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link
     href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
     rel="stylesheet"
   />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+  <!-- Your custom script -->
   <script src="script.js" defer></script>
 
   <style>
@@ -25,7 +27,6 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
     main {
       flex: 1;
       display: flex;
@@ -34,13 +35,10 @@
       justify-content: center;
       width: 100%;
     }
-
-    h1,
-    h2 {
+    h1, h2 {
       text-align: center;
       margin: 20px;
     }
-
     form {
       max-width: 900px;
       width: 100%;
@@ -50,13 +48,11 @@
       box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
       margin-bottom: 20px;
     }
-
     label {
       font-weight: bold;
       display: block;
       margin-bottom: 5px;
     }
-
     input[type="text"],
     input[type="number"],
     input[type="file"],
@@ -71,23 +67,18 @@
       box-sizing: border-box;
       transition: border-color 0.2s ease;
     }
-
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       border-color: #777;
       outline: none;
     }
-
     .donation-row {
       display: flex;
       gap: 15px;
       margin-bottom: 15px;
     }
-
     .donation-row > div {
       flex: 1;
     }
-
     button {
       padding: 10px 20px;
       font-size: 1rem;
@@ -97,21 +88,17 @@
       min-width: 150px;
       transition: background-color 0.2s ease, transform 0.2s ease;
     }
-
     button:hover {
       transform: translateY(-1px);
     }
-
     button[type="button"] {
       background-color: #007bff;
       color: #fff;
     }
-
     button[type="submit"] {
       background-color: #4caf50;
       color: #fff;
     }
-
     .button-container {
       text-align: center;
       margin-top: 20px;
@@ -119,7 +106,6 @@
       justify-content: center;
       gap: 15px;
     }
-
     .success-message {
       display: none;
       text-align: center;
@@ -127,7 +113,6 @@
       padding: 20px;
       border-radius: 10px;
     }
-
     .footer-message {
       text-align: center;
       margin-top: 30px;
@@ -135,33 +120,27 @@
       color: #aaaaaa;
       font-style: italic;
     }
-
     .image-preview {
       margin-top: 10px;
       text-align: center;
     }
-
     .image-preview img {
       max-width: 100px;
       max-height: 100px;
       border: 2px solid #444;
       border-radius: 5px;
     }
-
     @media (max-width: 768px) {
       form {
         padding: 20px;
       }
-
       .donation-row {
         flex-direction: column;
       }
-
       .button-container {
         flex-direction: column;
       }
     }
-
     /* Select2 Dark Mode */
     .select2-container .select2-selection--single {
       background-color: #2c2c2c !important;
@@ -255,7 +234,6 @@
         </div>
         <button type="button" onclick="addProcessedRow()">Add Processed Item</button>
 
-        <!-- New Currency Donations Section -->
         <h2>Currency Donations</h2>
         <div class="donation-row">
           <div>
@@ -271,7 +249,6 @@
             <input type="number" name="copper" id="copper" min="0" value="0" />
           </div>
         </div>
-        <!-- End of new Currency Donations Section -->
 
         <h2>Image Upload</h2>
         <div class="donation-row">
