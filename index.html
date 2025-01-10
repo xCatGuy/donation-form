@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Donation Form</title>
 
   <!-- Include jQuery before Select2 -->
@@ -15,7 +15,6 @@
   <script src="script.js" defer></script>
 
   <style>
-    /* Existing styles are retained */
     body {
       font-family: 'Roboto', sans-serif;
       margin: 0;
@@ -36,7 +35,8 @@
       width: 100%;
     }
 
-    h1, h2 {
+    h1,
+    h2 {
       text-align: center;
       margin: 20px;
     }
@@ -57,7 +57,10 @@
       margin-bottom: 5px;
     }
 
-    input[type="text"], input[type="number"], input[type="file"], select {
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    select {
       padding: 10px;
       border-radius: 5px;
       background-color: #2c2c2c;
@@ -69,7 +72,8 @@
       transition: border-color 0.2s ease;
     }
 
-    input:focus, select:focus {
+    input:focus,
+    select:focus {
       border-color: #777;
       outline: none;
     }
@@ -200,9 +204,11 @@
     <div id="form-container">
       <h1>Donation Form</h1>
       <form id="donationForm" onsubmit="submitDonationForm(event)">
+        <!-- Username -->
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required />
 
+        <!-- Materials Section -->
         <h2>Materials</h2>
         <div id="materialRows">
           <div class="donation-row">
@@ -230,6 +236,7 @@
         </div>
         <button type="button" onclick="addMaterialRow()">Add Material</button>
 
+        <!-- Processed Items Section -->
         <h2>Processed Items</h2>
         <div id="processedRows">
           <div class="donation-row">
@@ -240,7 +247,7 @@
             <div>
               <label for="processed-rarity">Rarity:</label>
               <select name="processed-rarity[]" class="processed-rarity-dropdown">
-                 <option value="">-- Select an option --</option>
+                <option value="">-- Select an option --</option>
                 <option value="Common">Common</option>
                 <option value="Uncommon">Uncommon</option>
                 <option value="Rare">Rare</option>
@@ -257,6 +264,24 @@
         </div>
         <button type="button" onclick="addProcessedRow()">Add Processed Item</button>
 
+        <!-- Currency Section -->
+        <h2>Currency</h2>
+        <div class="donation-row">
+          <div>
+            <label for="gold">Gold:</label>
+            <input type="number" name="gold" id="gold" min="0" />
+          </div>
+          <div>
+            <label for="silver">Silver:</label>
+            <input type="number" name="silver" id="silver" min="0" />
+          </div>
+          <div>
+            <label for="copper">Copper:</label>
+            <input type="number" name="copper" id="copper" min="0" />
+          </div>
+        </div>
+
+        <!-- Image Upload Section -->
         <h2>Image Upload</h2>
         <div class="donation-row">
           <div>
@@ -272,6 +297,7 @@
           <button type="submit">Submit Donations</button>
         </div>
       </form>
+
       <div class="footer-message">
         Created by xCatGuy for Kaos and Lace Cartel
       </div>
