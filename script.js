@@ -1,4 +1,5 @@
-const IMGUR_CLIENT_ID = '8d85a8d7fae7127'; // Replace with your Imgur Client ID
+// Replace with your actual Imgur Client ID
+const IMGUR_CLIENT_ID = '8d85a8d7fae7127'; 
 
 /**
  * Function to upload an image to Imgur.
@@ -11,6 +12,7 @@ async function uploadImage(file) {
     const response = await fetch('https://api.imgur.com/3/image', {
       method: 'POST',
       headers: {
+        // Correct use of backticks for template literal
         Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
       },
       body: formData,
@@ -38,50 +40,71 @@ async function submitDonationForm(event) {
   const form = document.getElementById('donationForm');
   const formData = new FormData(form);
 
+  // Gather basic fields
   const username = formData.get('username');
-  const fileInput = document.getElementById('image');
-  const file = fileInput.files[0];
+  
+  // Gather all Materials
+  const materials = formData
+    .getAll('material-item[]')
+    .filter(Boolean)
+    .join(', ');
+  const materialRarities = formData
+    .getAll('material-rarity[]')
+    .filter(Boolean)
+    .join(', ');
+  const materialQuantities = formData
+    .getAll('material-quantity[]')
+    .filter(Boolean)
+    .join(', ');
 
-  // Capture the currency fields
+  // Gather all Processed Items
+  const processedItems = formData
+    .getAll('processed-item[]')
+    .filter(Boolean)
+    .join(', ');
+  const processedRarities = formData
+    .getAll('processed-rarity[]')
+    .filter(Boolean)
+    .join(', ');
+  const processedQuantities = formData
+    .getAll('processed-quantity[]')
+    .filter(Boolean)
+    .join(', ');
+
+  // Gather Currency
   const gold = formData.get('gold') || 0;
   const silver = formData.get('silver') || 0;
   const copper = formData.get('copper') || 0;
 
+  // Upload image (if any)
   let imgUrl = '';
+  const fileInput = document.getElementById('image');
+  const file = fileInput.files[0];
   if (file) {
     imgUrl = await uploadImage(file);
-    if (!imgUrl) return; // Stop submission if image upload fails
+    if (!imgUrl) return; // Stop if image upload fails
   }
 
-  // Gather data from dropdowns (filter out empty values)
-  const materials = formData.getAll('material-item[]').filter(Boolean).join(', ');
-  const materialRarities = formData.getAll('material-rarity[]').filter(Boolean).join(', ');
-  const materialQuantities = formData.getAll('material-quantity[]').filter(Boolean).join(', ');
-  const processedItems = formData.getAll('processed-item[]').filter(Boolean).join(', ');
-  const processedRarities = formData.getAll('processed-rarity[]').filter(Boolean).join(', ');
-  const processedQuantities = formData.getAll('processed-quantity[]').filter(Boolean).join(', ');
-
+  // Build the body object to match the Sheety columns exactly
   const body = {
     sheet1: {
-      username,
+      username: username,
       materialItem: materials,
       materialRarity: materialRarities,
       materialQuantity: materialQuantities,
       processedItem: processedItems,
       processedRarity: processedRarities,
       processedQuantity: processedQuantities,
-      // New currency fields
-      gold,
-      silver,
-      copper,
-      // Image URL
-      imgUrl,
-      // Timestamp
+      gold: gold,
+      silver: silver,
+      copper: copper,
       timestamp: new Date().toISOString(),
+      imgUrl: imgUrl,
     },
   };
 
   try {
+    // Make sure this endpoint is correct for your Sheety project
     const response = await fetch(
       'https://api.sheety.co/b72bc2aee16edaafda655ebd98b49585/donationData/sheet1',
       {
@@ -94,8 +117,9 @@ async function submitDonationForm(event) {
     );
 
     if (response.ok) {
+      // Reset the form
       document.getElementById('donationForm').reset();
-      document.getElementById('imagePreview').innerHTML = ''; // Clear image preview
+      document.getElementById('imagePreview').innerHTML = '';
       document.getElementById('success-message').style.display = 'block';
       document.getElementById('form-container').style.display = 'none';
     } else {
@@ -171,7 +195,7 @@ async function populateInitialRows() {
   await loadItemsForDropdown('raw-items.json', materialDropdown);
   await loadItemsForDropdown('processed-items.json', processedDropdown);
 
-  // Initialize Select2
+  // Initialize Select2 after content is loaded
   $(document).ready(() => {
     $('.material-dropdown, .processed-dropdown, .material-rarity-dropdown, .processed-rarity-dropdown').select2();
   });
@@ -185,14 +209,15 @@ function addMaterialRow() {
   const newRow = document.createElement('div');
   newRow.classList.add('donation-row');
 
-  newRow.innerHTML =
-    `<div>
+  newRow.innerHTML = `
+    <div>
       <label for="material-item">Raw Material:</label>
       <select name="material-item[]" class="material-dropdown"></select>
     </div>
     <div>
       <label for="material-rarity">Rarity:</label>
       <select name="material-rarity[]" class="material-rarity-dropdown">
+        <option value="">-- Select an option --</option>
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -204,7 +229,8 @@ function addMaterialRow() {
     <div>
       <label for="material-quantity">Quantity:</label>
       <input type="number" name="material-quantity[]" min="1" />
-    </div>`;
+    </div>
+  `;
 
   materialRows.appendChild(newRow);
 
@@ -221,14 +247,15 @@ function addProcessedRow() {
   const newRow = document.createElement('div');
   newRow.classList.add('donation-row');
 
-  newRow.innerHTML =
-    `<div>
+  newRow.innerHTML = `
+    <div>
       <label for="processed-item">Processed Item:</label>
       <select name="processed-item[]" class="processed-dropdown"></select>
     </div>
     <div>
       <label for="processed-rarity">Rarity:</label>
       <select name="processed-rarity[]" class="processed-rarity-dropdown">
+        <option value="">-- Select an option --</option>
         <option value="Common">Common</option>
         <option value="Uncommon">Uncommon</option>
         <option value="Rare">Rare</option>
@@ -240,7 +267,8 @@ function addProcessedRow() {
     <div>
       <label for="processed-quantity">Quantity:</label>
       <input type="number" name="processed-quantity[]" min="1" />
-    </div>`;
+    </div>
+  `;
 
   processedRows.appendChild(newRow);
 
