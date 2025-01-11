@@ -1,5 +1,5 @@
 [
-  
+
   { "name": "Bluegill", "type": "Fish" },
   { "name": "Catfish", "type": "Fish" },
   { "name": "Crabfish", "type": "Fish" },
@@ -119,7 +119,7 @@
   { "name": "Weathered Oak Wood", "type": "Wood" },
   { "name": "Weeping Willow Wood", "type": "Wood" },
   { "name": "Western Larch Wood", "type": "Wood" },
- { "name": "2nd Sword Emblem", "type": "Other" },
+  { "name": "2nd Sword Emblem", "type": "Other" },
   { "name": "Academic Emblem", "type": "Other" },
   { "name": "Aelcan Chain Emblem", "type": "Other" },
   { "name": "Alecog's Hide", "type": "Other" },
@@ -387,7 +387,7 @@
   { "name": "Ancient Dunzen Sword", "type": "Recipe" },
   { "name": "Ancient Dunzen Wand", "type": "Recipe" },
   { "name": "Angler's Smoked Delight", "type": "Recipe" },
-  { "name": "Appentice Hunting Bow", "type": "Recipe" }
+  { "name": "Appentice Hunting Bow", "type": "Recipe" },
 { "name": "Apple", "type": "Recipe" },
 { "name": "Apple Berry Crunch Pie", "type": "Recipe" },
 { "name": "Apple Rooting Ball", "type": "Recipe" },
@@ -477,7 +477,7 @@
 { "name": "Apprentice Mining Satchel", "type": "Recipe" },
 { "name": "Apprentice Mining Shirt", "type": "Recipe" },
 { "name": "Apprentice Mining Survey Pylon", "type": "Recipe" },
-{ "name": "Apprentice Restored Treasure Map", "type": "Recipe" }
+{ "name": "Apprentice Restored Treasure Map", "type": "Recipe" },
 { "name": "Apprentice Scribe Pants", "type": "Recipe" },
 { "name": "Apprentice Scribe Shirt", "type": "Recipe" },
 { "name": "Apprentice Scroll of Adventuring Experience", "type": "Recipe" },
